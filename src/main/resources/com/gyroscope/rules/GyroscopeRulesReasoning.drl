@@ -1,8 +1,8 @@
 package com.device
 
 // list import classes
-import com.eospy.model.Devices;
-import com.eospy.model.ServerEvent;
+import com.arduinotron.model.Devices;
+import com.arduinotron.model.ServerEvent;
 
 // default dialect for the semantic code will be MVEL
 dialect "mvel"
@@ -13,7 +13,7 @@ rule "Device Gyroscope Readings"
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
 		$device.action = $event.getEvent(); 
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + "  accel " + $accel_x + " " + $accel_y + " " + $accel_z + " " + "  gyro " + $gyro_x + " " + $gyro_y + " " + $gyro_z + " " + "  magnet " + $magnet_x + " " + $magnet_y + " " + $magnet_z );
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + "  accel " + $accel_x + " " + $accel_y + " " + $accel_z + " " + "  gyro " + $gyro_x + " " + $gyro_y + " " + $gyro_z + " " + "  magnet " + $magnet_x + " " + $magnet_y + " " + $magnet_z );
 		modify( $device );
 end
 
@@ -42,7 +42,7 @@ rule "Device Address Location"
         $event : ServerEvent( $eventId : id, $address : address, $address != "null" )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " location " + $address);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " location " + $address);
 end
 
 rule "Device is in Motion"
@@ -50,6 +50,6 @@ rule "Device is in Motion"
         $event : ServerEvent( $eventId : id, $gyro_x : gyro_x, $gyro_y : gyro_y, $gyro_z : gyro_z, gyro_x > 0, gyro_y > 0, gyro_z > 0 )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log("Device " + $device.getName() + " in Motion");
+		com.arduinotron.ui.MainWindow.getInstance().log("Device " + $device.getName() + " in Motion");
 end
 
