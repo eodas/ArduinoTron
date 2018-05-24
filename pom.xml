@@ -4,13 +4,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.eospy</groupId>
-	<artifactId>EOSpy_AI-IoT</artifactId>
+	<groupId>com.arduinotron</groupId>
+	<artifactId>ArduinoTron</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>EOSpy AI–IoT :: Internet of Things Drools-jBPM Expert System using EOSpy Arduino Tron AI-IoT</name>
-	<description>EOSpy AI-IoT :: AI-IoT Application using the jBPM and Drools Rules Engine for EOSpy Arduino Tron and AI-IoT Executive Order Corp</description>
+	<name>Arduino Tron AI–IoT :: Internet of Things Drools-jBPM Expert System using EOSpy Arduino Tron AI-IoT</name>
+	<description>Arduino Tron AI-IoT :: AI-IoT Application using the jBPM and Drools Rules Engine for EOSpy Arduino Tron and AI-IoT Executive Order Corp</description>
 
 	<properties>
 		<runtime.version>7.7.0.Final</runtime.version>
@@ -63,6 +63,18 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.7</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>1.7.7</version>
 		</dependency>
 
 	</dependencies>
