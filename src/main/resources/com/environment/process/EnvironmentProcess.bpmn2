@@ -2,17 +2,16 @@
 <!-- origin at X=0.0 Y=0.0 -->
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.4.2.Final-v20171109-1930-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="ItemDefinition_19" isCollection="false" structureRef="java.lang.String"/>
-  <bpmn2:itemDefinition id="ItemDefinition_648" isCollection="false" structureRef="java.lang.Double"/>
   <bpmn2:process id="com.EnvironmentProcess" tns:packageName="com.EnvironmentPackage" name="Environment Process jBPM" isExecutable="true" processType="Private">
     <bpmn2:property id="id" itemSubjectRef="ItemDefinition_19" name="id"/>
     <bpmn2:property id="name" itemSubjectRef="ItemDefinition_19" name="name"/>
     <bpmn2:property id="event" itemSubjectRef="ItemDefinition_19" name="event"/>
     <bpmn2:property id="address" itemSubjectRef="ItemDefinition_19" name="address"/>
     <bpmn2:property id="textMessage" itemSubjectRef="ItemDefinition_19" name="textMessage"/>
-    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_648" name="temp"/>
-    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_648" name="light"/>
-    <bpmn2:property id="keyPress" itemSubjectRef="ItemDefinition_648" name="keyPress"/>
+    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_19" name="temp"/>
+    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_19" name="light"/>
     <bpmn2:property id="alarm" itemSubjectRef="ItemDefinition_19" name="alarm"/>
+    <bpmn2:property id="keypress" itemSubjectRef="ItemDefinition_19" name="keypress"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event">
       <bpmn2:extensionElements>
         <tns:metaData name="elementname">
@@ -44,7 +43,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;IoT &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName());
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;IoT &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName());
 </bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:scriptTask id="ScriptTask_3" name="Temperature Reading">
@@ -55,7 +54,8 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;IoT &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName() +  &quot; is &quot; + kcontext.getVariable(&quot;temp&quot;));</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;IoT &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName() +  &quot; is &quot; + kcontext.getVariable(&quot;temp&quot;));
+</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
@@ -74,7 +74,7 @@
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
       <bpmn2:script>if (kcontext.getVariable(&quot;temp&quot;) != &quot;0.0&quot;) {
-	com.eospy.ui.MainWindow.getInstance().log(&quot;Currently &quot; + kcontext.getVariable(&quot;temp&quot;) + &quot; at &quot; +  kcontext.getVariable(&quot;adderss&quot;));
+	com.arduinotron.ui.MainWindow.getInstance().log(&quot;Currently &quot; + kcontext.getVariable(&quot;temp&quot;) + &quot; at &quot; +  kcontext.getVariable(&quot;address&quot;));
 }
 
 
@@ -162,13 +162,13 @@
         <di:waypoint xsi:type="dc:Point" x="46.0" y="114.0"/>
         <di:waypoint xsi:type="dc:Point" x="63.0" y="114.0"/>
         <di:waypoint xsi:type="dc:Point" x="80.0" y="114.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_8"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_18"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ExclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="190.0" y="114.0"/>
         <di:waypoint xsi:type="dc:Point" x="203.0" y="114.0"/>
         <di:waypoint xsi:type="dc:Point" x="216.0" y="114.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_9"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_19"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ScriptTask_3">
         <di:waypoint xsi:type="dc:Point" x="266.0" y="114.0"/>
