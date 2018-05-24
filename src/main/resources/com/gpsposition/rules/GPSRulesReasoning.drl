@@ -1,8 +1,8 @@
 package com.device
 
 // list import classes
-import com.eospy.model.Devices;
-import com.eospy.model.ServerEvent;
+import com.arduinotron.model.Devices;
+import com.arduinotron.model.ServerEvent;
 
 // default dialect for the semantic code will be MVEL
 dialect "mvel"
@@ -14,7 +14,7 @@ rule "GPS Device Distance"
 	then
 		$device.action = "GPS";
 		$device.status = $event.getEvent();
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " GPS Distance:" + $distance + " Total:" + $totalDistance + " Altitude:" + $altitude);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " GPS Distance:" + $distance + " Total:" + $totalDistance + " Altitude:" + $altitude);
 		modify( $device )
 end
 
@@ -26,7 +26,7 @@ rule "GPS Device Speed Alert"
 	then
 		$device.action = "Alert";
 		$device.status = $event.getEvent();
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " GPS Speed Alert lat:" + $lat + " lon:" + $lon + " speed:" + $speed);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " GPS Speed Alert lat:" + $lat + " lon:" + $lon + " speed:" + $speed);
 		modify( $device )
 end
 
@@ -35,7 +35,7 @@ rule "GPS Device Fix Information"
         $event : ServerEvent( $eventId : id, $serverTime : serverTime, $deviceTime : deviceTime, $fixTime : fixTime, $outdated : outdated, $valid : valid ) 
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " GPS Fix on " + $fixTime);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " GPS Fix on " + $fixTime);
 end
 
 rule "GPS Device Address Location"
@@ -43,7 +43,7 @@ rule "GPS Device Address Location"
         $event : ServerEvent( $eventId : id, $address : address, $address != "null" )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " location " + $address);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " location " + $address);
 end
 
 rule "GPS Device Sent Text Message"
@@ -51,7 +51,7 @@ rule "GPS Device Sent Text Message"
         $event : ServerEvent( $eventId : id, $textMessage : textMessage, $textMessage != null )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " Text Message: " + $textMessage);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " Text Message: " + $textMessage);
 end
 
 rule "GPS Device Sent Alarm"
@@ -59,7 +59,7 @@ rule "GPS Device Sent Alarm"
         $event : ServerEvent( $eventId : id, $alarm : alarm, $alarm != null )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " Sent Alarm: " + $alarm);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " Sent Alarm: " + $alarm);
 end
 
 //declare rule to fire when Device in Motion
@@ -68,5 +68,5 @@ rule "GPS Device is in Motion"
         $event : ServerEvent( $eventId : id, $motion : motion, $motion == true )
       	$device : Devices( $deviceId : id,  $eventId == id )
     then
-		com.eospy.ui.MainWindow.getInstance().log("GPS Device " + $device.getName() + " in Motion");
+		com.arduinotron.ui.MainWindow.getInstance().log("GPS Device " + $device.getName() + " in Motion");
 end
