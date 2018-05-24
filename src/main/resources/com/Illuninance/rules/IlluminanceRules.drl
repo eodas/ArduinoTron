@@ -1,8 +1,8 @@
 package com.Illuninance
 
 // list import classes
-import com.eospy.model.Devices;
-import com.eospy.model.ServerEvent;
+import com.arduinotron.model.Devices;
+import com.arduinotron.model.ServerEvent;
 
 // default dialect for the semantic code will be MVEL
 dialect "mvel"
@@ -14,40 +14,40 @@ rule "event=allEvents Rule"
     then
 		$device.action = "allEvents"; 
 		$device.status = "Light " + $event.getLight();
-		com.eospy.ui.MainWindow.getInstance().log("Rule event=allEvents: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule event=allEvents: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
 		modify( $device );
 end
 
-rule "Key Press 1 Rule"
+rule "keypress1.0 Rule"
     when
-        $event : ServerEvent( $eventId : id, event == "keyPress_1" )
+        $event : ServerEvent( $eventId : id, event == "keypress1.0" )
       	$device : Devices( $deviceId : id,  $eventId == id )
     then
-		$device.action = "Key 1"; 
+		$device.action = "keypress1.0"; 
 		$device.status = "Light " + $event.getLight();
-		com.eospy.ui.MainWindow.getInstance().log("Rule Key Press 1: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule keypress1.0: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
 		modify( $device );
 end
 
-rule "Key Press 2 Rule"
+rule "keypress2.0 Rule"
     when
-        $event : ServerEvent( $eventId : id, event == "keyPress_2" )
+        $event : ServerEvent( $eventId : id, event == "keypress2.0" )
       	$device : Devices( $deviceId : id,  $eventId == id )
     then
-		$device.action = "Key 2"; 
+		$device.action = "keypress2.0"; 
 		$device.status = "Light " + $event.getLight();
-		com.eospy.ui.MainWindow.getInstance().log("Rule Key Press 2: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule keypress2.0: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
 		modify( $device );
 end
 
-rule "reedRelay Rule"
+rule "reedRelay / Proximity Rule"
     when
-        $event : ServerEvent( $eventId : id, (event == "reedRelay" || event == "Proximity") )
+        $event : ServerEvent( $eventId : id, (event == "keypress4.0" || event == "keypress8.0") )
       	$device : Devices( $deviceId : id,  $eventId == id )
     then
 		$device.action = "Alert"; 
 		$device.status = "Light " + $event.getLight();
-		com.eospy.ui.MainWindow.getInstance().log("Rule reedRelay: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule reedRelay / Proximity: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
 		modify( $device );
 end
 
@@ -57,7 +57,7 @@ rule "Rule for device ID: 1"
 	when
 		$event : ServerEvent( $eventId : id, $eventId == "1" )
 	then
-		com.eospy.ui.MainWindow.getInstance().log("ruleflow-group device ID: 1 " + $event.getEvent() + " - " + $event.getName());
+		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 1 " + $event.getEvent() + " - " + $event.getName());
 end
 
 rule "Rule for device ID: 2"
@@ -65,5 +65,5 @@ rule "Rule for device ID: 2"
 	when
 		$event : ServerEvent( $eventId : id, $eventId == "2" )
 	then
-		com.eospy.ui.MainWindow.getInstance().log("ruleflow-group device ID: 2 " + $event.getEvent() + " - " + $event.getName());
+		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 2 " + $event.getEvent() + " - " + $event.getName());
 end
