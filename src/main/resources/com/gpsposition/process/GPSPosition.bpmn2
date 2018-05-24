@@ -2,16 +2,15 @@
 <!-- origin at X=0.0 Y=0.0 -->
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.4.2.Final-v20171109-1930-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="ItemDefinition_19" isCollection="false" structureRef="java.lang.String"/>
-  <bpmn2:itemDefinition id="ItemDefinition_648" isCollection="false" structureRef="java.lang.Double"/>
   <bpmn2:process id="com.GPSPosition" tns:packageName="com.GPSPosition" name="GPSPositionjBPM" isExecutable="true" processType="Private">
     <bpmn2:property id="id" itemSubjectRef="ItemDefinition_19" name="id"/>
     <bpmn2:property id="name" itemSubjectRef="ItemDefinition_19" name="name"/>
     <bpmn2:property id="event" itemSubjectRef="ItemDefinition_19" name="event"/>
     <bpmn2:property id="address" itemSubjectRef="ItemDefinition_19" name="address"/>
     <bpmn2:property id="textMessage" itemSubjectRef="ItemDefinition_19" name="textMessage"/>
-    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_648" name="temp"/>
-    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_648" name="light"/>
-    <bpmn2:property id="keyPress" itemSubjectRef="ItemDefinition_648" name="keyPress"/>
+    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_19" name="temp"/>
+    <bpmn2:property id="keypress" itemSubjectRef="ItemDefinition_19" name="keypress"/>
+    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_19" name="light"/>
     <bpmn2:property id="alarm" itemSubjectRef="ItemDefinition_19" name="alarm"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event">
       <bpmn2:extensionElements>
@@ -44,7 +43,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event is allEvents&quot;);</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event is allEvents&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:scriptTask id="ScriptTask_3" name="GPS Device has Street Address" scriptFormat="http://www.java.com/java">
       <bpmn2:extensionElements>
@@ -54,20 +53,20 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:script>if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keyPress_1&quot;)) {
-    com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_KEYPRESS_1 (1.0)&quot;);
+      <bpmn2:script>if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keypress1.0&quot;)) {
+    com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_KEYPRESS 1.0&quot;);
 }
-if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keyPress_2&quot;)) {
-    com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_KEYPRESS_2 (2.0)&quot;);
+if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keypress2.0&quot;)) {
+    com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_KEYPRESS 2.0&quot;);
 }
-if (kcontext.getVariable(&quot;event&quot;).equals(&quot;reedRelay&quot;)) {
-    com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_REED_RELAY (4.0)&quot;);
+if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keypress4.0&quot;)) {
+    com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_REED_RELAY 4.0&quot;);
 }
-if (kcontext.getVariable(&quot;event&quot;).equals(&quot;Proximity&quot;)) {
-    com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_PROXIMITY (8.0)&quot;);
+if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keypress8.0&quot;)) {
+    com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_PROXIMITY 8.0&quot;);
 }
-if (kcontext.getVariable(&quot;event&quot;).equals(&quot;arduinoKey&quot;)) {
-    com.eospy.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_ARDYINO_KEY (16.0)&quot;);
+if (kcontext.getVariable(&quot;event&quot;).equals(&quot;keypress16.0&quot;)) {
+    com.arduinotron.ui.MainWindow.getInstance().log(&quot;GPS Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; event TYPE_ARDYINO_KEY 16.0&quot;);
 }
 </bpmn2:script>
     </bpmn2:scriptTask>
