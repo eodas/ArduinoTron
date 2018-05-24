@@ -2,17 +2,17 @@
 <!-- origin at X=0.0 Y=0.0 -->
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.4.2.Final-v20171109-1930-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="ItemDefinition_19" isCollection="false" structureRef="java.lang.String"/>
-  <bpmn2:itemDefinition id="ItemDefinition_828" isCollection="false" structureRef="java.lang.Double"/>
-  <bpmn2:itemDefinition id="ItemDefinition_25" isCollection="false" structureRef="java.lang.Object"/>
-  <bpmn2:process id="AI_IoT.Illuminance.jBPM" tns:packageName="com.Illuninance" name="EOSpy Illuminance jBPM" isExecutable="true" processType="Private">
+  <bpmn2:itemDefinition id="ItemDefinition_8" isCollection="false" structureRef="java.lang.Double"/>
+  <bpmn2:process id="AI_IoT.Illuminance.jBPM" tns:packageName="com.Illuninance" name="Arduino Tron Illuminance jBPM" isExecutable="true" processType="Private">
     <bpmn2:property id="id" itemSubjectRef="ItemDefinition_19" name="id"/>
     <bpmn2:property id="name" itemSubjectRef="ItemDefinition_19" name="name"/>
     <bpmn2:property id="event" itemSubjectRef="ItemDefinition_19" name="event"/>
     <bpmn2:property id="address" itemSubjectRef="ItemDefinition_19" name="address"/>
     <bpmn2:property id="textMessage" itemSubjectRef="ItemDefinition_19" name="textMessage"/>
-    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_828" name="temp"/>
-    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_828" name="light"/>
-    <bpmn2:property id="keyPress" itemSubjectRef="ItemDefinition_828" name="keyPress"/>
+    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_19" name="temp"/>
+    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_19" name="light"/>
+    <bpmn2:property id="ilight" itemSubjectRef="ItemDefinition_8" name="ilight"/>
+    <bpmn2:property id="keypress" itemSubjectRef="ItemDefinition_19" name="keypress"/>
     <bpmn2:property id="alarm" itemSubjectRef="ItemDefinition_19" name="alarm"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event">
       <bpmn2:extensionElements>
@@ -31,9 +31,9 @@
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:script>kcontext.getKnowledgeRuntime().insert(kcontext.getProcessInstance());
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED1=OFF&quot;);
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED2=OFF&quot;);
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=OFF&quot;);</bpmn2:script>
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED1=OFF&quot;);
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED2=OFF&quot;);
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED3=OFF&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="Light Level" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
@@ -49,16 +49,16 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=OFF&quot;);</bpm
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;Normal Light  - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED2=ON&quot;);</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;Normal Light  - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED2=ON&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" name="Start" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="Rules" sourceRef="ScriptTask_1" targetRef="BusinessRuleTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="Dark" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_6">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return  KieFunctions.lessThan(light, &quot;10&quot;);</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return  KieFunctions.lessThan(ilight, &quot;10&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="Normal" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_3">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2" language="http://www.java.com/java">return  KieFunctions.between(light ,&quot;10&quot;, &quot;100&quot;);</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2" language="http://www.java.com/java">return  KieFunctions.between(ilight ,&quot;10&quot;, &quot;100&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:endEvent id="EndEvent_3" name="End Dark">
       <bpmn2:extensionElements>
@@ -81,7 +81,7 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED2=ON&quot;);</bpmn
     <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" sourceRef="ScriptTask_6" targetRef="EndEvent_3"/>
     <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" sourceRef="ScriptTask_3" targetRef="EndEvent_4"/>
     <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="Bright" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_4">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3" language="http://www.java.com/java">return  KieFunctions.greaterThan(light, &quot;100&quot;);</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3" language="http://www.java.com/java">return  KieFunctions.greaterThan(ilight, &quot;100&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:scriptTask id="ScriptTask_4" name="Bright > 100">
       <bpmn2:extensionElements>
@@ -91,8 +91,8 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED2=ON&quot;);</bpmn
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;Bright  Light - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED1=ON&quot;);</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;Bright  Light - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED1=ON&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:endEvent id="EndEvent_1" name="End Bright">
       <bpmn2:extensionElements>
@@ -122,8 +122,8 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED1=ON&quot;);</bpmn
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;Dark/No Light - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
-com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=ON&quot;);</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;Dark/No Light - IoT Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Light Value is &quot; + kcontext.getVariable(&quot;light&quot;));
+com.arduinotron.server.URLConnection.getInstance().sendPost(&quot;/LED3=ON&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:textAnnotation id="TextAnnotation_1">
       <bpmn2:text>- Trigger Arduino device, analog output pins GPIO on an Arduino chip with HTTP post commands. &#xD;
@@ -203,7 +203,7 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=ON&quot;);</bpmn
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_2" bpmnElement="TextAnnotation_2">
         <dc:Bounds height="73.0" width="164.0" x="581.0" y="278.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_12">
+        <bpmndi:BPMNLabel id="BPMNLabel_112">
           <dc:Bounds height="67.0" width="152.0" x="587.0" y="278.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
@@ -227,7 +227,7 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=ON&quot;);</bpmn
         <di:waypoint xsi:type="dc:Point" x="485.0" y="231.0"/>
         <di:waypoint xsi:type="dc:Point" x="485.0" y="254.0"/>
         <di:waypoint xsi:type="dc:Point" x="485.0" y="278.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_10">
+        <bpmndi:BPMNLabel id="BPMNLabel_110">
           <dc:Bounds height="15.0" width="26.0" x="473.0" y="256.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
@@ -235,7 +235,7 @@ com.eospy.util.URLConnection.getInstance().sendPost(&quot;/LED3=ON&quot;);</bpmn
         <di:waypoint xsi:type="dc:Point" x="510.0" y="206.0"/>
         <di:waypoint xsi:type="dc:Point" x="543.0" y="206.0"/>
         <di:waypoint xsi:type="dc:Point" x="576.0" y="206.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_11">
+        <bpmndi:BPMNLabel id="BPMNLabel_111">
           <dc:Bounds height="15.0" width="41.0" x="523.0" y="207.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
