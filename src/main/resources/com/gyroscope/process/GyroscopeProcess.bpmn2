@@ -9,9 +9,9 @@
     <bpmn2:property id="event" itemSubjectRef="ItemDefinition_19" name="event"/>
     <bpmn2:property id="address" itemSubjectRef="ItemDefinition_19" name="address"/>
     <bpmn2:property id="textMessage" itemSubjectRef="ItemDefinition_19" name="textMessage"/>
-    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_648" name="temp"/>
-    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_648" name="light"/>
-    <bpmn2:property id="keyPress" itemSubjectRef="ItemDefinition_648" name="keyPress"/>
+    <bpmn2:property id="temp" itemSubjectRef="ItemDefinition_19" name="temp"/>
+    <bpmn2:property id="light" itemSubjectRef="ItemDefinition_19" name="light"/>
+    <bpmn2:property id="keypress" itemSubjectRef="ItemDefinition_19" name="keypress"/>
     <bpmn2:property id="alarm" itemSubjectRef="ItemDefinition_19" name="alarm"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event">
       <bpmn2:extensionElements>
@@ -44,7 +44,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;Device Event is allEvents&quot;);</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;Device Event is allEvents&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
@@ -80,7 +80,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_45</bpmn2:outgoing>
-      <bpmn2:script>com.eospy.ui.MainWindow.getInstance().log(&quot;Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName() +  &quot; is &quot; + kcontext.getVariable(&quot;event&quot;));</bpmn2:script>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; &quot; + kcontext.getNodeInstance().getNodeName() +  &quot; is &quot; + kcontext.getVariable(&quot;event&quot;));</bpmn2:script>
     </bpmn2:scriptTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -143,7 +143,7 @@
         <di:waypoint xsi:type="dc:Point" x="276.0" y="134.0"/>
         <di:waypoint xsi:type="dc:Point" x="276.0" y="100.0"/>
         <di:waypoint xsi:type="dc:Point" x="277.0" y="66.0"/>
-        <bpmndi:BPMNLabel id="BPMNLabel_10">
+        <bpmndi:BPMNLabel id="BPMNLabel_110">
           <dc:Bounds height="30.0" width="76.0" x="239.0" y="101.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
