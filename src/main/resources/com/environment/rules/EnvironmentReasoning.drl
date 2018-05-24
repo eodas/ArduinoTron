@@ -1,8 +1,8 @@
 package com.environment.reasoning
 
 // list import classes
-import com.eospy.model.Devices;
-import com.eospy.model.ServerEvent;
+import com.arduinotron.model.Devices;
+import com.arduinotron.model.ServerEvent;
 
 // default dialect for the semantic code will be MVEL
 dialect "mvel"
@@ -16,7 +16,7 @@ rule "IoT Device Environment Conditions Readings"
 		String result = ($temp == "0.0") ? "Mbar " + $mbar : "Temp " + $temp; 
 		$device.status = result;
 		String results = $event.getName() + "  Temp:" + $temp + "  IR_Temp:" + $ir_temp + "  Humidity:" + $humidity + "  Mbar:" + $mbar + "  Light:" + $light
-		com.eospy.ui.MainWindow.getInstance().log(results);
+		com.arduinotron.ui.MainWindow.getInstance().log(results);
 		modify( $device )
 end
 
@@ -28,7 +28,7 @@ rule "Raise alarm - Too Warm at Location"
 	then
 		$device.action = "Alert"; 
 		$device.status = "Temp " + $temp;
-		com.eospy.ui.MainWindow.getInstance().log(">>Raise Temp Alarm " + $event.getName() + " Temperature:" + $temp);
+		com.arduinotron.ui.MainWindow.getInstance().log(">>Raise Temp Alarm " + $event.getName() + " Temperature:" + $temp);
 		modify( $device );
 end
 
@@ -37,7 +37,7 @@ rule "IoT Device Sent Text Message"
         $event : ServerEvent( $eventId : id, $textMessage : textMessage, $textMessage != null )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " Text Message: " + $textMessage);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " Text Message: " + $textMessage);
 end
 
 rule "IoT Device Sent Alarm"
@@ -45,5 +45,5 @@ rule "IoT Device Sent Alarm"
         $event : ServerEvent( $eventId : id, $alarm : alarm, $alarm != null )
       	$device : Devices( $deviceId : id,  $eventId == id )
 	then
-		com.eospy.ui.MainWindow.getInstance().log($event.getName() + " Sent Alarm: " + $alarm);
+		com.arduinotron.ui.MainWindow.getInstance().log($event.getName() + " Sent Alarm: " + $alarm);
 end
