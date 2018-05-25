@@ -11,16 +11,16 @@ to improving the smart decision making is the key. The Executive Order Arduino T
 and products to self-monitor, self-diagnose and eventually, self-direct.
 
 Arduino Tron allows you to send IoT sensor data and information directly to the AI-IoT Drools-jBPM Expert System from the Arduino device.
-This provides a very light streamline IoT to Drools-jBPM (Business Process Management) application process without GPS positioning information.
+This provides a very lite streamline IoT to Drools-jBPM (Business Process Management) application process without GPS positioning information.
 Executive Order Arduino Tron — This quick guide will help you install and configure the Arduino Tron – Executive Order Sensor Processor System components.
 
 Executive Order Arduino Tron has several components:
-1. The Arduino Tron AI-IoT, the (Java) Internet of Things Drools-jBPM Expert System.
-2. The Arduino Tron Sensor, the (Arduino) application to send sensor MQTT Telemetry Transport.
-3. The Arduino Tron Server, the (Arduino) software to control external Arduino connected devices.
+1. The Arduino Tron AI-IoT (Java), the Internet of Things Drools-jBPM Expert System.
+2. The Arduino Tron Sensor (Arduino), the application to send sensor MQTT Telemetry Transport.
+3. The Arduino Tron Server (Arduino), the software to control external Arduino connected devices.
 
 You can have an unlimited number and combination of Arduino Tron IoT Devices and/or EOSPY GPS Client tracking devices in use with Arduino Tron AI-IoT.
-(Optionally, download EOSPY server from our website http://www.eospy.com and Download EOSPY GPS client from the Google Store, standard or TI-SensorTag version)
+(Optionally, download EOSPY server from our website http://www.eospy.com and Download EOSPY GPS client from the Google Store, standard or TI-SensorTag version.)
 
 (1) Arduino Tron AI-IoT – To install the Arduino Tron AI-IoT program on your windows computer, download and install the "Eclipse IDE for Java Developers."
 Use the Eclipse feature to add new software, available on the Eclipse menu “Help -> Install New Software”. Select the “Add” option and install these packages:
