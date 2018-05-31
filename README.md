@@ -1,18 +1,20 @@
 # Arduino Tron AI-IoT :: Internet of Things Drools-jBPM (Business Process Management)
 
+![alt tag](http://arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-e1527283874261.png "Arduino Tron")
+
 Executive Order Corp - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things (IoT)
 Arduino Tron :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using EOSpy AI-IoT Drools-jBPM
 
 The power of the IoT (Internet of Things) device increases greatly when business process (jBPM) can use them to provide information
 about our real-world as well as execute IoT devices as part of our business process. The jBPM-BPMN modular allow us to define 
 both the business processes and IoT devices behavior at the same time using one diagram. With Arduino Tron adding Drools-jBPM to IoT,
-we make the IoT devices “smart”. Moving beyond just collecting IoT data and transitioning, to leveraging the new wealth of IoT data, 
+we make the IoT devices "smart". Moving beyond just collecting IoT data and transitioning, to leveraging the new wealth of IoT data, 
 to improving the smart decision making is the key. The Executive Order Arduino Tron AI-IoT will help these IoT devices, environments, 
 and products to self-monitor, self-diagnose and eventually, self-direct.
 
 Arduino Tron allows you to send IoT sensor data and information directly to the AI-IoT Drools-jBPM Expert System from the Arduino device.
 This provides a very lite streamline IoT to Drools-jBPM (Business Process Management) application process without GPS positioning information.
-Executive Order Arduino Tron — This quick guide will help you install and configure the Arduino Tron – Executive Order Sensor Processor System components.
+Executive Order Arduino Tron - This quick guide will help you install and configure the Arduino Tron - Executive Order Sensor Processor System components.
 
 Executive Order Arduino Tron has several components:
 1. The Arduino Tron AI-IoT (Java), the Internet of Things Drools-jBPM Expert System.
@@ -22,13 +24,13 @@ Executive Order Arduino Tron has several components:
 You can have an unlimited number and combination of Arduino Tron IoT Devices and/or EOSPY GPS Client tracking devices in use with Arduino Tron AI-IoT.
 (Optionally, download EOSPY server from our website http://www.eospy.com and Download EOSPY GPS client from the Google Store, standard or TI-SensorTag version.)
 
-(1) Arduino Tron AI-IoT – To install the Arduino Tron AI-IoT program on your windows computer, download and install the "Eclipse IDE for Java Developers."
-Use the Eclipse feature to add new software, available on the Eclipse menu “Help -> Install New Software”. Select the “Add” option and install these packages:
+(1) Arduino Tron AI-IoT - To install the Arduino Tron AI-IoT program on your windows computer, download and install the "Eclipse IDE for Java Developers."
+Use the Eclipse feature to add new software, available on the Eclipse menu "Help -> Install New Software". Select the "Add" option and install these packages:
 Drools + jBPM Update Site 7.7.0 - http://downloads.jboss.org/jbpm/release/7.7.0.Final/updatesite/
 BPMN2-Modeler 1.4.2 - http://download.eclipse.org/bpmn2-modeler/updates/oxygen/1.4.2/
 GIT the Arduino Tron from the source code repository, and Import Existing Maven project.
 
-(2) Arduino Tron Sensor – To install the Arduino Tron application on your Arduino device, download the Arduino Tron Sensor application from GIT.
+(2) Arduino Tron Sensor - To install the Arduino Tron application on your Arduino device, download the Arduino Tron Sensor application from GIT.
 Update the with WiFi network values for network SSID (name) and network password. Update the Arduino Tron Server IP address and unique unit ID values.
 Also, you may use a DHT11 digital temperature and humidity sensor (see the Arduino Tron Sensor sketch for more details and information).
 
@@ -66,6 +68,6 @@ then
 end 
 
 - Executive Order Corporation
-- Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved
+- Copyright - 1978, 2018: Executive Order Corporation, All Rights Reserved
 
 
