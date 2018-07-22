@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arduinotron.model.DevicesList;
 import com.arduinotron.server.IoTServer;
-import com.arduinotron.server.URLConnection;
+import com.arduinotron.server.AgentConnection;
 import com.arduinotron.ui.MainWindow;
 
 /**
@@ -102,8 +102,8 @@ public class ArduinoTron {
 			}
 		});
 
-		new URLConnection(arduinoURL, knowledgeDebug);
-		RulesProcess rulesProcessor = new RulesProcess(devices, kSessionName, processID, knowledgeDebug);
+		new AgentConnection(arduinoURL, knowledgeDebug);
+		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionName, processID, knowledgeDebug);
 		startIoTServer(rulesProcessor);
 	}
 
@@ -155,7 +155,7 @@ public class ArduinoTron {
 		}
 	}
 
-	public void startIoTServer(RulesProcess rulesProcessor) {
+	public void startIoTServer(ProcessjBPMRules rulesProcessor) {
 		iotServer = new IoTServer(rulesProcessor, port);
 		iotServer.start();
 		iotrunning = true;

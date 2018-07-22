@@ -23,7 +23,7 @@ import com.arduinotron.util.WorkingMemoryListener;
 /**
  * The Arduino Tron AI-IoT Drools-jBPM application
  */
-public class RulesProcess {
+public class ProcessjBPMRules {
 
 	private DevicesList devices;
 	private KieSession kSession;
@@ -33,9 +33,9 @@ public class RulesProcess {
 	private String kSessionName = "";
 	private String processID = "";
 
-	private final Logger logger = LoggerFactory.getLogger(RulesProcess.class);
+	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public RulesProcess(DevicesList devices, String kSessionName, String processID, boolean knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionName, String processID, boolean knowledgeDebug) {
 		super();
 		this.devices = devices;
 		this.kSessionName = kSessionName;
@@ -71,7 +71,8 @@ public class RulesProcess {
 		return kSession;
 	}
 
-	public void receive(ServerEvent serverEvent) {
+	public String receive(ServerEvent serverEvent) {
+	    String response = "";
 		ProcessInstance instance = null;
 		// load up the knowledge base
 		this.kSession = createSession(this.kSessionName);
@@ -125,7 +126,7 @@ public class RulesProcess {
 				params.put(key, serverEvent.map.get(key));
 			}
 			params.put("ilight", serverEvent.getLight());
-
+	
 			// go! - start jBPM processID
 			if (processID != null && !processID.isEmpty()) {
 				// Start the process with knowledge session
@@ -134,6 +135,9 @@ public class RulesProcess {
 			if (instance.getState() != 2) {
 				System.out.println(">>" + instance.getState());
 			}
+
+			// instance.getParentProcessInstanceId().getVar
+			response = (String) kSession.getGlobal("results");
 			kSession.dispose();
 
 		} catch (Exception e) {
@@ -141,6 +145,7 @@ public class RulesProcess {
 			System.err.println("Unexpected exception caught: " + e.getMessage());
 			e.printStackTrace();
 		}
+		return (response);
 	}
 
 	public void log(String message) {

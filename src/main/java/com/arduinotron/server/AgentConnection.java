@@ -13,23 +13,23 @@ import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
-public class URLConnection {
+public class AgentConnection {
 
 	private boolean knowledgeDebug = false;
 	private final String USER_AGENT = "Mozilla/5.0";
 	private String arduinoURL = "http://10.0.0.2";
-	private static URLConnection URLCONNECTION_INSTANCE = null;
+	private static AgentConnection AGENTCONNECTION_INSTANCE = null;
 
-	private final Logger logger = LoggerFactory.getLogger(URLConnection.class);
+	private final Logger logger = LoggerFactory.getLogger(AgentConnection.class);
 
-	public URLConnection(String arduinoURL, boolean knowledgeDebug) {
+	public AgentConnection(String arduinoURL, boolean knowledgeDebug) {
 		this.arduinoURL = arduinoURL;
 		this.knowledgeDebug = knowledgeDebug;
-		URLConnection.URLCONNECTION_INSTANCE = this;
+		AgentConnection.AGENTCONNECTION_INSTANCE = this;
 	}
 
-	public static URLConnection getInstance() {
-		return URLCONNECTION_INSTANCE;
+	public static AgentConnection getInstance() {
+		return AGENTCONNECTION_INSTANCE;
 	}
 
 	// HTTP GET request
