@@ -42,7 +42,7 @@ const char* password = "your-password"; // your network password
 WiFiClient client;
 
 // Update these with Arduino Tron service IP address and unique unit id values
-byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
+byte server[] = { 10, 0, 0, 166 }; // Set EOSpy server IP address as bytes
 String id = "1001"; // Device unique unit id
 
 // Update these with LAT/LON GPS position values
@@ -129,17 +129,21 @@ const String ALARM_REMOVING = "removing";
 String ver = "1.03E";
 int loopCounter = 1; // loop counter
 int timeCounter = 901; // time counter
+int actionState = 0; // action command received
 int switchState = 0; // digitalRead value from gpiox button
 char readKeyboard = 0; // read serial command
 
 // Arduino Time Sync from NTP Server using ESP8266 WiFi module
 unsigned int localPort = 2390; // local port to listen for UDP packets
-const char* ntpServerName = "time.nist.gov";
 IPAddress timeServerIP;
+const char* ntpServerName = "time.nist.gov";
 
 const int NTP_PACKET_SIZE = 48;
 byte packetBuffer[NTP_PACKET_SIZE];
 WiFiUDP udp;
+
+unsigned long milsec = 0;
+unsigned long epoch = 0;
 
 // DHT11 digital temperature and humidity sensor pin Vout (sense)
 int pinDHT11 = 2;
@@ -151,13 +155,17 @@ extern "C" {
 }
 
 void setup(void) {
-  pinMode(LED1, OUTPUT); // LED pin as output
-  digitalWrite(LED1, LOW); // turn the LED off
+  pinMode(LED0, OUTPUT); // LED pin as output
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+  pinMode(LED4, OUTPUT);
+  digitalWrite(LED0, LOW); // turn the LED off
 
-  // pinMode(BUTTON5, INPUT); // Declaring Arduino Pins as an Input
-  // pinMode(BUTTON6, INPUT);
-  // pinMode(BUTTON7, INPUT);
-  // pinMode(BUTTON8, INPUT);
+  pinMode(BUTTON5, INPUT); // Declaring Arduino Pins as an Input
+  pinMode(BUTTON6, INPUT);
+  pinMode(BUTTON7, INPUT);
+  pinMode(BUTTON8, INPUT);
 
   // Arduino IDE Serial Monitor window to emulate what Arduino Tron sensors are reading
   Serial.begin(115200); // Serial connection from ESP-01 via 3.3v console cable
@@ -177,10 +185,9 @@ void loop(void)
 
   if (timeCounter > 900) {
     timeCounter = 0;
-    ntpdervertime(); // get NTP time every 90 seconds
     if (readDHT11Temp) {
-      readdht11(); // read DHT11 digital temperature and humidity sensor
-      // arduinotronsend(); <-- uncommit for dht11
+      readDHT11(); // read DHT11 digital temperature and humidity sensor
+      // arduinoTronSend(); <-- uncommit for dht11
     }
   }
 
@@ -188,20 +195,35 @@ void loop(void)
   readKeyboard = 0;
   delay(100); // waits for tenth of a second
 
+  // Use serial monitor keyboard to emulate sensors inputs. This allows you to prototype an Arduino Tron emulate the sensors without having to build circuit board.
   if (Serial.available() > 0) { // is a character available?
     readKeyboard = Serial.read(); // get keyboard character
     switchState = int( readKeyboard );
-    switchState = switchState - 48;
+    switchState = switchState - 48; // 0-9:;<=>
   }
-  if (switchState != 0)
-  {
-    arduinotronsend();
+
+  if (digitalRead(BUTTON5) == HIGH) { // read the pushButton state
+    switchState = 1;
+  }
+  if (digitalRead(BUTTON6) == HIGH) {
+    switchState = 2;
+  }
+  if (digitalRead(BUTTON7) == HIGH) {
+    switchState = 3;
+  }
+  if (digitalRead(BUTTON8) == HIGH) {
+    switchState = 4;
+  }
+
+  if (switchState != 0) {
+    arduinoTronSend();
   }
 }
 
-void arduinotronsend()
+void arduinoTronSend()
 {
-  digitalWrite(LED1, HIGH); // turn the LED on
+  digitalWrite(LED0, HIGH); // turn the LED on
+  getTimeClock(); // get time clock for event timestamp
 
   // Explicitly set the ESP8266 to be a WiFi-client
   WiFi.mode(WIFI_STA);
@@ -306,8 +328,36 @@ void arduinotronsend()
 
   while (client.available())
   {
-    String Line = client.readStringUntil('\r');
-    Serial.print(Line);
+    String line = client.readStringUntil('\r');
+    if (line.indexOf("/LED1=ON") != -1)  {
+      actionState = 1;
+    }
+    if (line.indexOf("/LED1=OFF") != -1)  {
+      actionState = 2;
+    }
+    if (line.indexOf("/LED2=ON") != -1)  {
+      actionState = 3;
+    }
+    if (line.indexOf("/LED2=OFF") != -1)  {
+      actionState = 4;
+    }
+    if (line.indexOf("/LED3=ON") != -1)  {
+      actionState = 5;
+    }
+    if (line.indexOf("/LED3=OFF") != -1)  {
+      actionState = 6;
+    }
+    if (line.indexOf("/LED4=ON") != -1)  {
+      actionState = 7;
+    }
+    if (line.indexOf("/LED4=OFF") != -1)  {
+      actionState = 8;
+    }
+    if (actionState != 0)
+    {
+      arduinoTronAction();
+    }
+    Serial.print(line);
   }
   client.stop();
 
@@ -331,10 +381,41 @@ void arduinotronsend()
 
   // WiFi.disconnect(); // DO NOT DISCONNECT WIFI IF YOU WANT TO LOWER YOUR POWER DURING LIGHT_SLEEP_T DELLAY !
   // wifi_set_sleep_type(LIGHT_SLEEP_T);
-  digitalWrite(LED1, LOW); // turn the LED off
+  digitalWrite(LED0, LOW); // turn the LED off
 }
 
-void readdht11() {
+void arduinoTronAction()
+{
+  switch (actionState) {
+    case 1: // receiveState
+      digitalWrite(LED1, HIGH);
+      break;
+    case 2:
+      digitalWrite(LED1, LOW);
+      break;
+    case 3:
+      digitalWrite(LED2, HIGH);
+      break;
+    case 4:
+      digitalWrite(LED2, LOW);
+      break;
+    case 5:
+      digitalWrite(LED3, HIGH);
+      break;
+    case 6:
+      digitalWrite(LED3, LOW);
+      break;
+    case 7:
+      digitalWrite(LED4, HIGH);
+      break;
+    case 8:
+      digitalWrite(LED4, LOW);
+      break;
+  }
+  actionState = 0;
+}
+
+void readDHT11() {
   byte temperature = 0;
   byte _humidity = 0;
   //int err = SimpleDHTErrSuccess; <-- uncommit for dht11
@@ -351,7 +432,18 @@ void readdht11() {
   humidity = "41.6"; // String(_humidity);
 }
 
-void ntpdervertime()
+void getTimeClock()
+{
+  if ((milsec == 0) || (epoch == 0) || ((millis() - milsec) > 3600000)) {
+    setNTPServerTime(); // get time clock for event timestamp
+    milsec = millis();
+    return;
+  }
+  unsigned long mpoch = epoch + ((millis() - milsec) / 1000);
+  timestamp = String(mpoch);
+}
+
+void setNTPServerTime()
 {
   WiFi.begin(ssid, password);
 
@@ -364,7 +456,7 @@ void ntpdervertime()
   udp.begin(localPort);
   WiFi.hostByName(ntpServerName, timeServerIP);
 
-  sendntppacket(timeServerIP);
+  sendNTPpacket(timeServerIP);
   delay(1000);
 
   int cb = udp.parsePacket();
@@ -377,7 +469,7 @@ void ntpdervertime()
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
     unsigned long secsSince1900 = highWord << 16 | lowWord;
     const unsigned long seventyYears = 2208988800UL;
-    unsigned long epoch = secsSince1900 - seventyYears;
+    epoch = secsSince1900 - seventyYears; // Unix epoch number of seconds since midnight 1-1-70
     // Serial.print("UNX");
     // Serial.println(epoch);
     timestamp = String(epoch);
@@ -385,9 +477,9 @@ void ntpdervertime()
   udp.stop();
 }
 
-unsigned long sendntppacket(IPAddress& address)
+unsigned long sendNTPpacket(IPAddress& address)
 {
-  // Serial.println("Sending NTP packet...");
+  Serial.println("Sending NTP packet...");
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   packetBuffer[0] = 0b11100011; // LI, Version, Mode
   packetBuffer[1] = 0; // Stratum, or type of clock
