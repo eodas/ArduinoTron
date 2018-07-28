@@ -58,7 +58,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="Main Train Device" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_2">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return  KieFunctions.equalsTo(id, &quot;1&quot;);</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return  KieFunctions.equalsTo(id, &quot;100111&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="2" name="Other Train Device" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_3"/>
     <bpmn2:endEvent id="EndEvent_3" name="End Train Device">

@@ -48,7 +48,7 @@ void setup() {
   // Connect to WiFi network
   Serial.println("Executive Order Corporation - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT)");
   Serial.println("Arduino Tron Drools-jBPM :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM");
-  Serial.println("- Arduino Tron Server ver " + ver);
+  Serial.println("- Arduino Tron Agent ver " + ver);
   Serial.println("Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved");
 
   Serial.println();
@@ -64,9 +64,9 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connected");
 
-  // Start the server
+  // Start the arduino tron agent
   server.begin();
-  Serial.println("Arduino Tron Server started");
+  Serial.println("Arduino Tron Agent started");
 
   // Print the IP address
   Serial.print("Use this URL to connect: ");

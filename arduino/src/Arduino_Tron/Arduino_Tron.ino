@@ -42,8 +42,8 @@ const char* password = "your-password"; // your network password
 WiFiClient client;
 
 // Update these with Arduino Tron service IP address and unique unit id values
-byte server[] = { 10, 0, 0, 166 }; // Set EOSpy server IP address as bytes
-String id = "1001"; // Device unique unit id
+byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
+String id = "100111"; // Device unique unit id
 
 // Update these with LAT/LON GPS position values
 // You can find LAT/LON from an address https://www.latlong.net/convert-address-to-lat-long.html
@@ -195,7 +195,8 @@ void loop(void)
   readKeyboard = 0;
   delay(100); // waits for tenth of a second
 
-  // Use serial monitor keyboard to emulate sensors inputs. This allows you to prototype an Arduino Tron emulate the sensors without having to build circuit board.
+  // Use the Serial Monitor keyboard to emulate sensor inputs to Arduino Tron sketch.
+  // This will allow you prototype the Arduino Tron IoT device before custom-designing and building printed circuit board (PCB).
   if (Serial.available() > 0) { // is a character available?
     readKeyboard = Serial.read(); // get keyboard character
     switchState = int( readKeyboard );
@@ -313,9 +314,8 @@ void arduinoTronSend()
   }
   client.println(" HTTP/1.1");
 
-  client.println("User-Agent: Arduino Tron ESP8266 MQTT Telemetry Transport EOSpy, ver " + ver);
-  client.println("Connection: Keep-Alive");
-  client.println("Accept-Encoding: gzip");
+  client.println("User-Agent: Arduino Tron ver " + ver);
+  client.println("Content-Length: 0");
 
   client.println(); // empty line for apache server
 
@@ -361,9 +361,7 @@ void arduinoTronSend()
   }
   client.stop();
 
-  Serial.println();
   Serial.print("Connection Status: ");
-
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Connected Ok");
   } else {

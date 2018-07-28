@@ -71,7 +71,9 @@ public class IoTServerThread extends Thread {
 						}
 					}
 					response = rulesProcessor.receive(serverEvent);
-					out.println(response);
+					if (response != null) {
+						out.println(response);
+					}
 					sendHttpTextResp(200, "OK");
 				}
 			}
@@ -100,10 +102,7 @@ public class IoTServerThread extends Thread {
 
 		out.println("HTTP/1.1 " + status + " " + headerText);
 		out.println("Content-Length: 0");
-		out.println("Content-Type: text/html");
 		out.println(""); //  do not forget this one
-		out.println("<!DOCTYPE HTML>");
-		out.println("<html>");
 
 		out.flush();
 		out.close();
