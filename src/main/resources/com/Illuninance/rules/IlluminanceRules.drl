@@ -51,19 +51,19 @@ rule "reedRelay / Proximity Rule"
 		modify( $device );
 end
 
-//declare any rules to fire in the jBPM AI_IoT.Illuminance process
-rule "Rule for device ID: 1"
+//declare any ruleflow-group rules to fire in the jBPM AI_IoT.Illuminance process
+rule "Rule for device ID: 100111"
 	ruleflow-group "Illuminance Rule Flow"
 	when
-		$event : ServerEvent( $eventId : id, $eventId == "1" )
+		$event : ServerEvent( $eventId : id, $eventId == "100111" )
 	then
-		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 1 " + $event.getEvent() + " - " + $event.getName());
+		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 100111 " + $event.getName() + " - " + $event.getEvent());
 end
 
-rule "Rule for device ID: 2"
+rule "Rule for device ID: 100222"
 	ruleflow-group "Illuminance Rule Flow"
 	when
-		$event : ServerEvent( $eventId : id, $eventId == "2" )
+		$event : ServerEvent( $eventId : id, $eventId == "100222" )
 	then
-		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 2 " + $event.getEvent() + " - " + $event.getName());
+		com.arduinotron.ui.MainWindow.getInstance().log("ruleflow-group device ID: 100222 " + $event.getName() + " - " + $event.getEvent());
 end
