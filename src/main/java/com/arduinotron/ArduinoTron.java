@@ -50,7 +50,7 @@ public class ArduinoTron {
 	private int port = 5055;
 	private String kSessionName = "ksession-movement";
 	private String processID = "com.TrainMovement";
-	private String arduinoURL = "http://10.0.0.2";
+	private String arduinoAgent = "http://10.0.0.2";
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 
@@ -102,7 +102,7 @@ public class ArduinoTron {
 			}
 		});
 
-		new AgentConnection(arduinoURL, knowledgeDebug);
+		new AgentConnection(arduinoAgent, knowledgeDebug);
 		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionName, processID, knowledgeDebug);
 		startIoTServer(rulesProcessor);
 	}
@@ -138,8 +138,8 @@ public class ArduinoTron {
 				if (key.indexOf("processID") != -1) {
 					processID = value;
 				}
-				if (key.indexOf("arduinoURL") != -1) {
-					arduinoURL = value;
+				if (key.indexOf("arduinoAgent") != -1) {
+					arduinoAgent = value;
 				}
 				if (key.equals("knowledgeDebug")) {
 					if (value.indexOf("true") != -1) {
