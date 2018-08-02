@@ -50,7 +50,7 @@ public class ArduinoTron {
 	private int port = 5055;
 	private String kSessionName = "ksession-movement";
 	private String processID = "com.TrainMovement";
-	private String arduinoAgent = "http://10.0.0.2";
+	private String arduinoAgent = "http://10.0.0.2...";
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 

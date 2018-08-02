@@ -17,7 +17,7 @@ public class AgentConnection {
 
 	private boolean knowledgeDebug = false;
 	private final String USER_AGENT = "Mozilla/5.0";
-	private String arduinoAgent = "http://10.0.0.2";
+	private String arduinoAgent = "http://10.0.0.2...";
 	private static AgentConnection AGENTCONNECTION_INSTANCE = null;
 
 	private final Logger logger = LoggerFactory.getLogger(AgentConnection.class);
@@ -35,8 +35,12 @@ public class AgentConnection {
 	// HTTP GET request
 	public void sendGet(String command) {
 		String urlString = arduinoAgent + command;
+		if (arduinoAgent.indexOf("http://10.0.0.2...") != -1) {
+			System.err.println("Error: Send Arduino Command no arduinoURL=http:<ip address> defined in arduinotron.properties file.");
+			return;
+		}
 		if (arduinoAgent == null && arduinoAgent.isEmpty()) {
-			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.<2>");
+			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.");
 			return;
 		}
 
@@ -76,8 +80,12 @@ public class AgentConnection {
 	// HTTP Post request
 	public void sendPost(String command) {
 		String url = arduinoAgent + command;
+		if (arduinoAgent.indexOf("http://10.0.0.2...") != -1) {
+			System.err.println("Error: Send Arduino Command no arduinoURL=http:<ip address> defined in arduinotron.properties file.");
+			return;
+		}
 		if (arduinoAgent == null && arduinoAgent.isEmpty()) {
-			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.<4>");
+			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.");
 			return;
 		}
 
