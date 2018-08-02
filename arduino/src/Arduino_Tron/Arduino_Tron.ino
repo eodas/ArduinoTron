@@ -11,6 +11,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
+#define ADC0 A0 // NodeMCU pin Analog ADC0 (A0)
+
 #define LED0 D0 // NodeMCU pin GPIO16 (D0)
 #define LED1 D1 // NodeMCU pin GPIO5 (D1)
 #define LED2 D2 // NodeMCU pin GPIO4 (D2)
@@ -42,21 +44,22 @@ const char* password = "your-password"; // your network password
 WiFiClient client;
 
 // Update these with Arduino Tron service IP address and unique unit id values
-byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
-String id = "100111"; // Device unique unit id
+byte server[] = { 10, 0, 0, 166 }; // Set EOSpy server IP address as bytes
+String id = "100111"; // Arduino Tron Device unique unit id
 
-// Update these with LAT/LON GPS position values
+// Update these with your LAT/LON GPS position values
 // You can find LAT/LON from an address https://www.latlong.net/convert-address-to-lat-long.html
 String address = "National_Air_Space_Museum_600_Independence_Ave_Washington_DC_20560";
 String lat = "38.888160"; // position LAT National Air Space Museum
 String lon = "-77.019868"; // position LON
 
 // Above are all the fields you need to provide values, the remaining fields are used in the Arduino Tron application
-const bool readPushButton = true; // Values for the digitalRead value from gpiox button
-const bool readDHT11Temp = true; // Values for the DHT11 digital temperature/humidity sensor
+const bool readPushButton = false; // Values for the digitalRead value from gpiox button
+const bool readDHT11Temp = false; // Values for the DHT11 digital temperature/humidity sensor
+const bool readLDRLight = false; // Values for the LDR analog photocell light sensor
 
-const int httpPort = 5055; // OsmAnd server is running on default port 5055
-// OpenStreetMap Automated Navigation Directions is a map and navigation app for Android
+const int httpPort = 5055; // Arduino Tron server is running on default port 5055
+// OpenStreetMap Automated Navigation Directions is a map and navigation app for Android default port 5055
 
 // Values ?id=334455&timestamp=1521212240&lat=38.888160&lon=-77.019868&speed=0.0&bearing=0.0&altitude=0.0&accuracy=0.0&batt=98.7
 String timestamp = "1521212240"; // timestamp
@@ -64,8 +67,8 @@ String speeds = "0.0";
 String bearing = "0.0";
 String altitude = "0.0";
 String accuracy = "0.0"; // position accuracy
-String batt = "98.7"; // battery value
-String light = "123.4";
+String batt = "89.7"; // battery value
+String light = "53.4"; // photocell value
 
 // Arduino Tron currently supports these additional data fields in the Server Event data model:
 
@@ -75,7 +78,7 @@ String light = "123.4";
 // &accel_x=-0.01&accel_y=-0.07&accel_z=9.79&gyro_x=0.0&gyro_y=-0.0&gyro_z=-0.0&magnet_x=-0.01&magnet_y=-0.07&magnet_z=9.81
 // &light=91.0&keypress=0.0&alarm=Temperature&distance=1.6&totalDistance=3.79&motion=false
 
-// You can add more additional fields to the data model and transmit via any device to the Arduino Tron Drools-jBPM processing.
+// You can add more additional fields to the data model and transmit via any device to the Arduino Tron Drools-jBPM processing
 
 // Values for the DHT11 digital temperature/humidity sensor; &temp= and &humidity= fields
 String temp = "0.0";
@@ -85,6 +88,7 @@ String humidity = "0.0";
 String textMessage = "text_message";
 
 // Values to send in &keypress= field
+const String TYPE_ALLEVENTS = "allEvents"; // allEvents
 const String TYPE_KEYPRESS_1 = "1.0"; // keypress_1
 const String TYPE_KEYPRESS_2 = "2.0"; // keypress_2
 const String TYPE_REED_RELAY = "4.0"; // reedRelay
@@ -129,7 +133,7 @@ const String ALARM_REMOVING = "removing";
 String ver = "1.03E";
 int loopCounter = 1; // loop counter
 int timeCounter = 901; // time counter
-int actionState = 0; // action command received
+int actionState = 0; // actionState result received command
 int switchState = 0; // digitalRead value from gpiox button
 char readKeyboard = 0; // read serial command
 
@@ -149,20 +153,24 @@ unsigned long epoch = 0;
 int pinDHT11 = 2;
 //SimpleDHT11 dht11; <-- uncommit for dht11
 
+// LDR Photocell light interface for NodeMCU
+int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
+float photocellLight; // Variable to hold last analog light value
+
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
 #include "user_interface.h"
 }
 
 void setup(void) {
-  pinMode(LED0, OUTPUT); // LED pin as output
+  pinMode(LED0, OUTPUT); // Declaring Arduino LED pin as output
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
   digitalWrite(LED0, LOW); // turn the LED off
 
-  pinMode(BUTTON5, INPUT); // Declaring Arduino Pins as an Input
+  pinMode(BUTTON5, INPUT); // Declaring Arduino pins as an inputs
   pinMode(BUTTON6, INPUT);
   pinMode(BUTTON7, INPUT);
   pinMode(BUTTON8, INPUT);
@@ -177,10 +185,13 @@ void setup(void) {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
+  delay(1500);
 }
 
 void loop(void)
 {
+  switchState = 0;
+  readKeyboard = 0;
   timeCounter++;
 
   if (timeCounter > 900) {
@@ -191,29 +202,31 @@ void loop(void)
     }
   }
 
-  switchState = 0;
-  readKeyboard = 0;
-  delay(100); // waits for tenth of a second
+  if (readLDRLight) {
+    readLDRPhotocell(); // read LDR analog photocell light sensor
+  }
 
-  // Use the Serial Monitor keyboard to emulate sensor inputs to Arduino Tron sketch.
-  // This will allow you prototype the Arduino Tron IoT device before custom-designing and building printed circuit board (PCB).
+  // Use the Serial Monitor keyboard to emulate sensor inputs to Arduino Tron sketch
+  // This will allow you prototype the Arduino Tron IoT device before custom-designing and building printed circuit board (PCB)
   if (Serial.available() > 0) { // is a character available?
     readKeyboard = Serial.read(); // get keyboard character
     switchState = int( readKeyboard );
     switchState = switchState - 48; // 0-9:;<=>
   }
 
-  if (digitalRead(BUTTON5) == HIGH) { // read the pushButton state
-    switchState = 1;
-  }
-  if (digitalRead(BUTTON6) == HIGH) {
-    switchState = 2;
-  }
-  if (digitalRead(BUTTON7) == HIGH) {
-    switchState = 3;
-  }
-  if (digitalRead(BUTTON8) == HIGH) {
-    switchState = 4;
+  if (readPushButton) {
+    if (digitalRead(BUTTON5) == HIGH) { // read the pushButton state
+      switchState = 1;
+    }
+    if (digitalRead(BUTTON6) == HIGH) {
+      switchState = 2;
+    }
+    if (digitalRead(BUTTON7) == HIGH) {
+      switchState = 3;
+    }
+    if (digitalRead(BUTTON8) == HIGH) {
+      switchState = 4;
+    }
   }
 
   if (switchState != 0) {
@@ -260,7 +273,7 @@ void arduinoTronSend()
   Serial.println("Connected");
   client.print("GET /?id=" + id);
   client.print("&timestamp=" + timestamp);
-  // client.print("&lat=" + lat); <-- no GPS location needed
+  // client.print("&lat=" + lat); <-- no GPS location needed in demo
   // client.print("&lon=" + lon);
   // client.print("&speed=" + speeds);
   // client.print("&bearing=" + bearing);
@@ -292,8 +305,10 @@ void arduinoTronSend()
       client.print("&alarm=" + ALARM_MOVEMENT);
       break;
     case 5:
-      client.print("&textMessage=");
-      client.print(timestamp);
+      textMessage = "Illuminance_Alert";
+      client.print("&textMessage=" + textMessage);
+      client.print("&light=" + light);
+      client.print("&keypress=" + TYPE_KEYPRESS_1);
       break;
     case 6:
       client.print("&event=allEvents&protocol=osmand&outdated=false&valid=true&lat=38.85&lon=-84.35&altitude=27.0&speed=65.5&course=0.0");
@@ -413,23 +428,44 @@ void arduinoTronAction()
   actionState = 0;
 }
 
+// Arduino values for the DHT11 digital temperature/humidity sensor; &temp= and &humidity= fields
+// DHT11 digital temperature and humidity sensor pin Vout (sense)
 void readDHT11() {
-  byte temperature = 0;
+  byte _temp = 0;
   byte _humidity = 0;
   //int err = SimpleDHTErrSuccess; <-- uncommit for dht11
 
-  //if ((err = dht11.read(pinDHT11, &temperature, &_humidity, NULL)) != SimpleDHTErrSuccess) { <-- uncommit for dht11
+  //if ((err = dht11.read(pinDHT11, &_temp, &_humidity, NULL)) != SimpleDHTErrSuccess) { <-- uncommit for dht11
   //  Serial.print("Read DHT11 failed, error = ");
   //  Serial.println(err);
   //  return;
   //}
 
   // convert to Fahrenheit
-  float temperatureF = 0; // (temperature * 9.0 / 5.0) + 32.0; <-- uncommit for dht11
-  temp = "72.2"; // String(temperatureF);
+  // float _tempF = 0; // (_temp * 9.0 / 5.0) + 32.0; <-- uncommit for dht11
+  temp = "72.2"; // String(_tempF);
   humidity = "41.6"; // String(_humidity);
 }
 
+// Arduino valuse for the LDR analog photocell light sensor
+// LDR and 10K pulldown resistor are connected to A0
+void readLDRPhotocell() {
+  int photocellReading = analogRead(ADC0); // read the LDR input on analog pin A0:
+  float floatLight = photocellReading * (100.0 / 1023.0);
+
+  if ((photocellLight > floatLight) && ((photocellLight - floatLight) > photocellChange)) {
+    photocellLight = floatLight;
+    light = String(floatLight);
+    switchState = 5;
+  }
+  if ((photocellLight < floatLight) && ((floatLight - photocellLight) > photocellChange)) {
+    photocellLight = floatLight;
+    light = String(floatLight);
+    switchState = 5;
+  }
+}
+
+// Arduino Time Sync from NTP Server using ESP8266 WiFi module
 void getTimeClock()
 {
   if ((milsec == 0) || (epoch == 0) || ((millis() - milsec) > 3600000)) {

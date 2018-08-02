@@ -3,7 +3,7 @@
   - Arduino Tron Drools-jBPM :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM
   - Arduino Tron AI-IoT :: Internet of Things Drools-jBPM Expert System using Arduino Tron AI-IoT Processing
   - Executive Order Corporation
-  - Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved 
+  - Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved
 ********************/
 
 #include <ESP8266WiFi.h>
