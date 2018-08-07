@@ -7,6 +7,7 @@
 ********************/
 
 //#include <SimpleDHT.h> <-- uncommit for dht11
+//#include <IRrecv.h> <-- uncommit for IR VS1838
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -44,7 +45,7 @@ const char* password = "your-password"; // your network password
 WiFiClient client;
 
 // Update these with Arduino Tron service IP address and unique unit id values
-byte server[] = { 10, 0, 0, 166 }; // Set EOSpy server IP address as bytes
+byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
 String id = "100111"; // Arduino Tron Device unique unit id
 
 // Update these with your LAT/LON GPS position values
@@ -57,6 +58,7 @@ String lon = "-77.019868"; // position LON
 const bool readPushButton = false; // Values for the digitalRead value from gpiox button
 const bool readDHT11Temp = false; // Values for the DHT11 digital temperature/humidity sensor
 const bool readLDRLight = false; // Values for the LDR analog photocell light sensor
+const bool readIRSensor = false; // Arduino valuse for IR sensor connected to GPIO2
 
 const int httpPort = 5055; // Arduino Tron server is running on default port 5055
 // OpenStreetMap Automated Navigation Directions is a map and navigation app for Android default port 5055
@@ -157,6 +159,12 @@ int pinDHT11 = 2;
 int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
+// Arduino valuse for IR sensor connected to GPIO2
+uint16_t RECV_PIN = D5;
+//IRrecv irrecv(RECV_PIN); <-- uncommit for IR VS1838
+//decode_results results; <-- uncommit for IR VS1838
+String irkey = "1";
+
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
 #include "user_interface.h"
@@ -185,7 +193,11 @@ void setup(void) {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-  delay(1500);
+
+  if (readIRSensor) {
+    //  irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
+  }
+  delay(800);
 }
 
 void loop(void)
@@ -204,6 +216,10 @@ void loop(void)
 
   if (readLDRLight) {
     readLDRPhotocell(); // read LDR analog photocell light sensor
+  }
+
+  if (readIRSensor) {
+    readIRDetector(); // Arduino valuse for IR sensor connected to GPIO2
   }
 
   // Use the Serial Monitor keyboard to emulate sensor inputs to Arduino Tron sketch
@@ -290,7 +306,7 @@ void arduinoTronSend()
     case 1: // switchState NodeMCU gpio pinMode()
       client.print("&keypress=" + TYPE_KEYPRESS_1);
       break;
-    case 2: // send IoT message data for keypress_1 (1.0)
+    case 2: // send IoT message data for keypress_2 (2.0)
       client.print("&keypress=" + TYPE_KEYPRESS_2);
       break;
     case 3:
@@ -305,9 +321,9 @@ void arduinoTronSend()
       client.print("&alarm=" + ALARM_MOVEMENT);
       break;
     case 5:
-      textMessage = "Illuminance_Alert";
-      client.print("&textMessage=" + textMessage);
       client.print("&light=" + light);
+      textMessage = "Illuminance_Alert_Message";
+      client.print("&textMessage=" + textMessage);
       client.print("&keypress=" + TYPE_KEYPRESS_1);
       break;
     case 6:
@@ -326,6 +342,13 @@ void arduinoTronSend()
       client.print("&address=The_Street_Address&accuracy=0.0&network=null&batteryLevel=78.3&textMessage=Message_Sent&ir_temp=0.0&mbar=79.9");
       client.print("&accel_x=-0.01&accel_y=-0.07&accel_z=9.79&gyro_x=0.0&gyro_y=-0.0&gyro_z=-0.0&magnet_x=-0.01&magnet_y=-0.07&magnet_z=9.81");
       client.print("&light=91.0&alarm=Temperature&distance=1.6&totalDistance=3.79&motion=false");
+      break;
+    case 10: // Arduino valuse for keypress IR sensor connected to GPIO2
+      client.print("&keypress=" + irkey); // keypress=irkey
+      break;
+    case 11: // Arduino event from IR sensor connected to GPIO2
+      client.print("&event=" + irkey);
+      break;
   }
   client.println(" HTTP/1.1");
 
@@ -463,6 +486,97 @@ void readLDRPhotocell() {
     light = String(floatLight);
     switchState = 5;
   }
+}
+
+// Arduino valuse for IR sensor connected to GPIO2
+void readIRDetector() {
+  //if (!irrecv.decode(&results)) { <-- uncommit for IR VS1838
+  return;
+  //} <-- uncommit for IR VS1838
+  //unsigned int ircode = results.value; <-- uncommit for IR VS1838
+  //irrecv.resume(); // Receive the next value <-- uncommit for IR VS1838
+
+  //if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
+  return;
+  //} <-- uncommit for IR VS1838
+
+  switchState = 10;
+  /*switch (results.value) { // Declaring IR remote codes <-- uncommit for IR VS1838
+      case 0xFFA25D:
+        irkey = "POWER";
+        switchState = 11;
+        break;
+      case 0xFF629D:
+        irkey = "MODE";
+        switchState = 11;
+        break;
+      case 0xFFE21D:
+        irkey = "MUTE";
+        switchState = 11;
+        break;
+      case 0xFF02FD:
+        irkey = "FORWARD";
+        switchState = 11;
+        break;
+      case 0xFFC23D:
+        irkey = "BACKWARD";
+        switchState = 11;
+        break;
+      case 0xFF22DD:
+        irkey = "PLAY";
+        switchState = 11;
+        break;
+      case 0xFFE01F:
+        irkey = "EQ";
+        switchState = 11;
+        break;
+      case 0xFFA857:
+        irkey = "DOWN";
+        switchState = 11;
+        break;
+      case 0xFF906F:
+        irkey = "UP";
+        switchState = 11;
+        break;
+      case 0xFF9867:
+        irkey = "SWAP";
+        switchState = 11;
+        break;
+      case 0xFFB04F:
+        irkey = "U/SD";
+        switchState = 11;
+        break;
+      case 0xFF30CF:
+        irkey = "1.0";
+        break;
+      case 0xFF18E7:
+        irkey = "2.0";
+        break;
+      case 0xFF7A85:
+        irkey = "3.0";
+        break;
+      case 0xFF10EF:
+        irkey = "4.0";
+        break;
+      case 0xFF38C7:
+        irkey = "5.0";
+        break;
+      case 0xFF5AA5:
+        irkey = "6.0";
+        break;
+      case 0xFF42BD:
+        irkey = "7.0";
+        break;
+      case 0xFF4AB5:
+        irkey = "8.0";
+        break;
+      case 0xFF52AD:
+        irkey = "9.0";
+        break;
+      case 0xFF6897:
+        irkey = "0.0";
+        break;
+    } */
 }
 
 // Arduino Time Sync from NTP Server using ESP8266 WiFi module
