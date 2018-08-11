@@ -1,14 +1,26 @@
 package com.arduinotron;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jbpm.test.JBPMHelper;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 
@@ -28,22 +40,27 @@ public class ProcessjBPMRules {
 	private DevicesList devices;
 	private KieSession kSession;
 	private KieContainer kContainer;
+	private RuntimeManager manager;
+	private RuntimeEngine runtime;
 
 	private boolean knowledgeDebug = false;
+	private String kSessionType = "";
 	private String kSessionName = "";
 	private String processID = "";
 
 	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public ProcessjBPMRules(DevicesList devices, String kSessionName, String processID, boolean knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID,
+			boolean knowledgeDebug) {
 		super();
 		this.devices = devices;
+		this.kSessionType = kSessionType;
 		this.kSessionName = kSessionName;
 		this.processID = processID;
 		this.knowledgeDebug = knowledgeDebug;
 	}
 
-	public KieSession createSession(String kSessionName) {
+	public KieSession createKieSession(String kSessionName) {
 		if (kContainer == null) {
 			// load up the knowledge base
 			KieServices ks = KieServices.Factory.get();
@@ -71,11 +88,92 @@ public class ProcessjBPMRules {
 		return kSession;
 	}
 
+	private static KieSession getKieSession(String bpmn) throws Exception {
+		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
+				.addAsset(KieServices.Factory.get().getResources().newClassPathResource(bpmn), ResourceType.BPMN2)
+				.get();
+		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment).getRuntimeEngine(null)
+				.getKieSession();
+	}
+
+	private static RuntimeManager getRuntimeManager(String process) {
+		// load up the knowledge base
+		JBPMHelper.startH2Server();
+		JBPMHelper.setupDataSource();
+		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+				.addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
+				.get();
+		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+	}
+	
+//
+	
+	public void main1(String[] args) {
+		try {
+			// load up the knowledge session
+			kSession = getKieSession("com/looping/Looping.bpmn2");
+			// start a new process instance
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("count", 5);
+			kSession.startProcess("com.sample.looping", params);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+
+	public void main2(String[] args) {
+		try {
+			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
+			runtime = manager.getRuntimeEngine(null);
+			kSession = runtime.getKieSession();
+
+			// start a new process instance
+			Map<String, Object> params = new HashMap<String, Object>();
+			List<String> list = new ArrayList<String>();
+			list.add("krisv");
+			list.add("john doe");
+			list.add("superman");
+			params.put("list", list);
+			kSession.startProcess("com.sample.multipleinstance", params);
+
+			TaskService taskService = runtime.getTaskService();
+			List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("sales-rep", "en-UK");
+			for (TaskSummary task : tasks) {
+				System.out.println("Sales-rep executing task " + task.getName() + "(" + task.getId() + ": "
+						+ task.getDescription() + ")");
+				taskService.start(task.getId(), "sales-rep");
+				taskService.complete(task.getId(), "sales-rep", null);
+			}
+
+			manager.disposeRuntimeEngine(runtime);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		System.exit(0);
+	}
+
+//
+	
 	public String receive(ServerEvent serverEvent) {
 	    String response = "";
 		ProcessInstance instance = null;
-		// load up the knowledge base
-		this.kSession = createSession(this.kSessionName);
+
+		try {
+			// load up the knowledge base
+			switch (this.kSessionType) {
+			case "createKieSession":
+				this.kSession = createKieSession(this.kSessionName);
+				break;
+			case "getKieSession":
+				this.kSession = getKieSession(this.kSessionName);
+				break;
+			case "getRuntimeManager":
+				this.manager = getRuntimeManager(this.kSessionName);
+				break;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 
 		if (knowledgeDebug) {
 			// KieSession ksession = this.createDefaultSession();

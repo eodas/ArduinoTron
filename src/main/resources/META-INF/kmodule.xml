@@ -21,7 +21,13 @@
 
 	<kbase name="kbaseIlluninance"
 		packages="com.Illuninance.rules, com.Illuninance.process">
-		<ksession name="kSession-Illuninance">
+		<ksession name="ksession-Illuninance">
+		</ksession>
+	</kbase>
+
+	<kbase name="kbaseIRSensor"
+		packages="com.irsensor.rules, com.irsensor.process">
+		<ksession name="ksession-irsensor">
 		</ksession>
 	</kbase>
 

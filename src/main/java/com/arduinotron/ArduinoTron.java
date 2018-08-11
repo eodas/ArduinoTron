@@ -48,6 +48,7 @@ public class ArduinoTron {
 	private boolean knowledgeDebug = false;
 
 	private int port = 5055;
+	private String kSessionType = "createKieSession";
 	private String kSessionName = "ksession-movement";
 	private String processID = "com.TrainMovement";
 	private String arduinoAgent = "http://10.0.0.2...";
@@ -103,7 +104,7 @@ public class ArduinoTron {
 		});
 
 		new AgentConnection(arduinoAgent, knowledgeDebug);
-		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionName, processID, knowledgeDebug);
+		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID, knowledgeDebug);
 		startIoTServer(rulesProcessor);
 	}
 
@@ -132,6 +133,9 @@ public class ArduinoTron {
 					port = Integer.parseInt(portStr);
 				}
 
+				if (key.indexOf("kSessionType") != -1) {
+					kSessionType = value;
+				}
 				if (key.indexOf("kSessionName") != -1) {
 					kSessionName = value;
 				}
