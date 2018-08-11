@@ -45,11 +45,11 @@ public class ArduinoTron {
 	private String buildDate = "0304";
 	private boolean is64bitJMV = false;
 	private static boolean iotrunning = false;
-	private boolean knowledgeDebug = false;
 
 	private int port = 5055;
 	private String kSessionType = "createKieSession";
 	private String kSessionName = "ksession-movement";
+	private String knowledgeDebug = "none";
 	private String processID = "com.TrainMovement";
 	private String arduinoAgent = "http://10.0.0.2...";
 
@@ -64,7 +64,7 @@ public class ArduinoTron {
 		getIPAddress();
 		readProperties();
 
-		if (knowledgeDebug) {
+		if (knowledgeDebug.indexOf("none") == -1) {
 			System.out.println("os.name: " + System.getProperty("os.name"));
 			System.out.println("os.arch: " + System.getProperty("os.arch"));
 			is64bitJMV = (System.getProperty("os.arch").indexOf("64") != -1);
@@ -120,19 +120,18 @@ public class ArduinoTron {
 			while (enuKeys.hasMoreElements()) {
 				String key = (String) enuKeys.nextElement();
 				String value = properties.getProperty(key);
-				if (knowledgeDebug) {
-					System.out.println(key + "=" + value);
-				}
-
-				if (key.indexOf("serverEvent") != -1) {
-					// serverEvent = value;
-				}
 
 				if (key.indexOf("port") != -1) {
 					String portStr = value;
 					port = Integer.parseInt(portStr);
 				}
 
+				if (key.indexOf("serverEvent") != -1) {
+					// serverEvent = value;
+				}
+				if (key.indexOf("knowledgeDebug") != -1) {
+					knowledgeDebug = value;
+				}
 				if (key.indexOf("kSessionType") != -1) {
 					kSessionType = value;
 				}
@@ -144,12 +143,6 @@ public class ArduinoTron {
 				}
 				if (key.indexOf("arduinoAgent") != -1) {
 					arduinoAgent = value;
-				}
-				if (key.equals("knowledgeDebug")) {
-					if (value.indexOf("true") != -1) {
-						knowledgeDebug = true;
-					}
-					return;
 				}
 			}
 		} catch (FileNotFoundException e) {

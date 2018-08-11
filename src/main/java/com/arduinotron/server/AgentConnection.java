@@ -15,14 +15,14 @@ import java.net.MalformedURLException;
 
 public class AgentConnection {
 
-	private boolean knowledgeDebug = false;
 	private final String USER_AGENT = "Mozilla/5.0";
+	private String knowledgeDebug = "none";
 	private String arduinoAgent = "http://10.0.0.2...";
 	private static AgentConnection AGENTCONNECTION_INSTANCE = null;
 
 	private final Logger logger = LoggerFactory.getLogger(AgentConnection.class);
 
-	public AgentConnection(String arduinoAgent, boolean knowledgeDebug) {
+	public AgentConnection(String arduinoAgent, String knowledgeDebug) {
 		this.arduinoAgent = arduinoAgent;
 		this.knowledgeDebug = knowledgeDebug;
 		AgentConnection.AGENTCONNECTION_INSTANCE = this;
@@ -109,15 +109,15 @@ public class AgentConnection {
 			wr.close();
 
 			int responseCode = con.getResponseCode();
-			if (knowledgeDebug) {
+			if (knowledgeDebug.indexOf("none") == -1) {
 				System.out.println("Send 'POST' request to URL: " + url);
 				System.out.println("Post Data: " + postJsonData);
 				System.out.println("Response Code: " + responseCode);
 			}
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String output;
 			StringBuffer response = new StringBuffer();
+			String output;
 
 			while ((output = in.readLine()) != null) {
 				response.append(output);
@@ -125,7 +125,7 @@ public class AgentConnection {
 			in.close();
 
 			// printing result from response
-			if (knowledgeDebug) {
+			if (knowledgeDebug.indexOf("none") == -1) {			
 				System.out.println(response.toString());
 			}
 		} catch (MalformedURLException e) {

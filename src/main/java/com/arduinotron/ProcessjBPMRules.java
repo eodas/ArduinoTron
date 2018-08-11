@@ -43,15 +43,14 @@ public class ProcessjBPMRules {
 	private RuntimeManager manager;
 	private RuntimeEngine runtime;
 
-	private boolean knowledgeDebug = false;
+	private String knowledgeDebug = "none";
 	private String kSessionType = "";
 	private String kSessionName = "";
 	private String processID = "";
 
 	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID,
-			boolean knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID, String knowledgeDebug) {
 		super();
 		this.devices = devices;
 		this.kSessionType = kSessionType;
@@ -76,7 +75,7 @@ public class ProcessjBPMRules {
 			return null;
 		}
 
-		if (knowledgeDebug) {
+		if (knowledgeDebug.indexOf("debug") != -1) {
 			AgendaListener agendaListener = new AgendaListener();
 			WorkingMemoryListener memoryListener = new WorkingMemoryListener();
 			kSession.addEventListener(agendaListener);
@@ -84,7 +83,7 @@ public class ProcessjBPMRules {
 			// ksession.setGlobal("helper", helper);
 			// ksession.setGlobal("logger", logger);
 			// kSession.setGlobal("busCalendar", busCalendar);
-		}
+		}  
 		return kSession;
 	}
 
@@ -106,8 +105,7 @@ public class ProcessjBPMRules {
 		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 	}
 	
-//
-	
+/*
 	public void main1(String[] args) {
 		try {
 			// load up the knowledge session
@@ -120,7 +118,7 @@ public class ProcessjBPMRules {
 			t.printStackTrace();
 		}
 	}
-
+*/
 	public void main2(String[] args) {
 		try {
 			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
@@ -175,12 +173,12 @@ public class ProcessjBPMRules {
 			t.printStackTrace();
 		}
 
-		if (knowledgeDebug) {
+		if (knowledgeDebug.indexOf("debug") != -1) {
 			// KieSession ksession = this.createDefaultSession();
 			kSession.addEventListener(new SystemOutProcessEventListener());
 			kSession.addEventListener(new RuleAwareProcessEventLister());
 			kSession.addEventListener(new TriggerRulesEventListener(kSession));
-		}
+		} 
 
 		Devices device = this.devices.getDevice(serverEvent.getId());
 		if (device == null) {
@@ -198,7 +196,7 @@ public class ProcessjBPMRules {
 			}
 		}
 
-		if (knowledgeDebug) {
+		if (knowledgeDebug.indexOf("none") == -1) {
 			System.out.println("> TRACE " + serverEvent.getDeviceTime() + " id " + device.getId() + "-"
 					+ serverEvent.getName() + " event " + serverEvent.getEvent());
 		}
@@ -210,7 +208,7 @@ public class ProcessjBPMRules {
 		try {
 			// go! - fire rules
 			long noOfRulesFired = this.kSession.fireAllRules();
-			if (knowledgeDebug) {
+			if (knowledgeDebug.indexOf("none") == -1) {
 				System.out.println("> TRACE kSession no of Rules Fired: " + noOfRulesFired);
 				System.out.println("> TRACE Number of facts in the session: " + kSession.getFactCount());
 			}
