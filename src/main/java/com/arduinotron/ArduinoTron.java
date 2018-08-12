@@ -104,7 +104,8 @@ public class ArduinoTron {
 		});
 
 		new AgentConnection(arduinoAgent, knowledgeDebug);
-		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID, knowledgeDebug);
+		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
+				knowledgeDebug);
 		startIoTServer(rulesProcessor);
 	}
 

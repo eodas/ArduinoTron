@@ -25,12 +25,6 @@
 		</ksession>
 	</kbase>
 
-	<kbase name="kbaseIRSensor"
-		packages="com.irsensor.rules, com.irsensor.process">
-		<ksession name="ksession-irsensor">
-		</ksession>
-	</kbase>
-
 	<kbase name="kbaseMovement"
 		packages="com.movement.rules, com.movement.process">
 		<ksession name="ksession-movement">

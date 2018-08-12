@@ -42,6 +42,7 @@ public class ProcessjBPMRules {
 	private KieContainer kContainer;
 	private RuntimeManager manager;
 	private RuntimeEngine runtime;
+	private RuntimeEnvironment environment;
 
 	private String knowledgeDebug = "none";
 	private String kSessionType = "";
@@ -50,7 +51,8 @@ public class ProcessjBPMRules {
 
 	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID, String knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID,
+			String knowledgeDebug) {
 		super();
 		this.devices = devices;
 		this.kSessionType = kSessionType;
@@ -83,42 +85,28 @@ public class ProcessjBPMRules {
 			// ksession.setGlobal("helper", helper);
 			// ksession.setGlobal("logger", logger);
 			// kSession.setGlobal("busCalendar", busCalendar);
-		}  
+		}
 		return kSession;
 	}
 
-	private static KieSession getKieSession(String bpmn) throws Exception {
-		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
+	private KieSession getKieSession(String bpmn) throws Exception {
+		environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
 				.addAsset(KieServices.Factory.get().getResources().newClassPathResource(bpmn), ResourceType.BPMN2)
 				.get();
 		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment).getRuntimeEngine(null)
 				.getKieSession();
 	}
 
-	private static RuntimeManager getRuntimeManager(String process) {
+	private RuntimeManager getRuntimeManager(String process) {
 		// load up the knowledge base
 		JBPMHelper.startH2Server();
 		JBPMHelper.setupDataSource();
-		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+		environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
 				.addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
 				.get();
 		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 	}
-	
-/*
-	public void main1(String[] args) {
-		try {
-			// load up the knowledge session
-			kSession = getKieSession("com/looping/Looping.bpmn2");
-			// start a new process instance
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("count", 5);
-			kSession.startProcess("com.sample.looping", params);
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-*/
+
 	public void main2(String[] args) {
 		try {
 			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
@@ -151,9 +139,9 @@ public class ProcessjBPMRules {
 	}
 
 //
-	
+
 	public String receive(ServerEvent serverEvent) {
-	    String response = "";
+		String response = "";
 		ProcessInstance instance = null;
 
 		try {
@@ -163,7 +151,9 @@ public class ProcessjBPMRules {
 				this.kSession = createKieSession(this.kSessionName);
 				break;
 			case "getKieSession":
-				this.kSession = getKieSession(this.kSessionName);
+				if (environment == null) {
+					this.kSession = getKieSession(this.kSessionName);
+				}
 				break;
 			case "getRuntimeManager":
 				this.manager = getRuntimeManager(this.kSessionName);
@@ -178,7 +168,7 @@ public class ProcessjBPMRules {
 			kSession.addEventListener(new SystemOutProcessEventListener());
 			kSession.addEventListener(new RuleAwareProcessEventLister());
 			kSession.addEventListener(new TriggerRulesEventListener(kSession));
-		} 
+		}
 
 		Devices device = this.devices.getDevice(serverEvent.getId());
 		if (device == null) {
@@ -222,7 +212,7 @@ public class ProcessjBPMRules {
 				params.put(key, serverEvent.map.get(key));
 			}
 			params.put("ilight", serverEvent.getLight());
-	
+
 			// go! - start jBPM processID
 			if (processID != null && !processID.isEmpty()) {
 				// Start the process with knowledge session
@@ -234,8 +224,18 @@ public class ProcessjBPMRules {
 
 			// instance.getParentProcessInstanceId().getVar
 			response = (String) kSession.getGlobal("results");
-			kSession.dispose();
 
+			switch (this.kSessionType) {
+			case "createKieSession":
+				kSession.dispose();
+				break;
+			case "getKieSession":
+				//
+				break;
+			case "getRuntimeManager":
+				environment.close();
+				break;
+			}
 		} catch (Exception e) {
 			System.err.println("=============================================================");
 			System.err.println("Unexpected exception caught: " + e.getMessage());
