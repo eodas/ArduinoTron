@@ -195,7 +195,7 @@ void setup(void) {
   Serial.println(ssid);
 
   if (readIRSensor) {
-    //  irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
+    //irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
   }
   delay(800);
 }
@@ -358,9 +358,9 @@ void arduinoTronSend()
   client.println(); // empty line for apache server
 
   int i = 0;
-  // Wait up to 10 seconds for server to respond then read response
+  // Wait up to 5 seconds for server to respond then read response
   while ((!client.available()) && (i < 1000)) {
-    delay(10);
+    delay(5); // was 10 seconds
     i++;
   }
 
@@ -490,93 +490,95 @@ void readLDRPhotocell() {
 
 // Arduino valuse for IR sensor connected to GPIO2
 void readIRDetector() {
-  //if (!irrecv.decode(&results)) { <-- uncommit for IR VS1838
+  // if (!irrecv.decode(&results)) { <-- uncommit for IR VS1838
   return;
-  //} <-- uncommit for IR VS1838
-  //unsigned int ircode = results.value; <-- uncommit for IR VS1838
-  //irrecv.resume(); // Receive the next value <-- uncommit for IR VS1838
+  // } <-- uncommit for IR VS1838
+  // unsigned int ircode = results.value; <-- uncommit for IR VS1838
 
-  //if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
+  // irrecv.resume(); Receive the next value <-- uncommit for IR VS1838
+
+  // if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
   return;
-  //} <-- uncommit for IR VS1838
+  // } <-- uncommit for IR VS1838
 
   switchState = 10;
-  /*switch (results.value) { // Declaring IR remote codes <-- uncommit for IR VS1838
-      case 0xFFA25D:
-        irkey = "POWER";
-        switchState = 11;
-        break;
-      case 0xFF629D:
-        irkey = "MODE";
-        switchState = 11;
-        break;
-      case 0xFFE21D:
-        irkey = "MUTE";
-        switchState = 11;
-        break;
-      case 0xFF02FD:
-        irkey = "FORWARD";
-        switchState = 11;
-        break;
-      case 0xFFC23D:
-        irkey = "BACKWARD";
-        switchState = 11;
-        break;
-      case 0xFF22DD:
-        irkey = "PLAY";
-        switchState = 11;
-        break;
-      case 0xFFE01F:
-        irkey = "EQ";
-        switchState = 11;
-        break;
-      case 0xFFA857:
-        irkey = "DOWN";
-        switchState = 11;
-        break;
-      case 0xFF906F:
-        irkey = "UP";
-        switchState = 11;
-        break;
-      case 0xFF9867:
-        irkey = "SWAP";
-        switchState = 11;
-        break;
-      case 0xFFB04F:
-        irkey = "U/SD";
-        switchState = 11;
-        break;
-      case 0xFF30CF:
-        irkey = "1.0";
-        break;
-      case 0xFF18E7:
-        irkey = "2.0";
-        break;
-      case 0xFF7A85:
-        irkey = "3.0";
-        break;
-      case 0xFF10EF:
-        irkey = "4.0";
-        break;
-      case 0xFF38C7:
-        irkey = "5.0";
-        break;
-      case 0xFF5AA5:
-        irkey = "6.0";
-        break;
-      case 0xFF42BD:
-        irkey = "7.0";
-        break;
-      case 0xFF4AB5:
-        irkey = "8.0";
-        break;
-      case 0xFF52AD:
-        irkey = "9.0";
-        break;
-      case 0xFF6897:
-        irkey = "0.0";
-        break;
-    } */
+  unsigned int ircodekey = 0; // results.value; <-- uncommit for IR VS1838
+  switch (ircodekey) { // Declaring IR remote codes
+    case 0xFFA25D:
+      irkey = "POWER";
+      switchState = 11;
+      break;
+    case 0xFF629D:
+      irkey = "MODE";
+      switchState = 11;
+      break;
+    case 0xFFE21D:
+      irkey = "MUTE";
+      switchState = 11;
+      break;
+    case 0xFF02FD:
+      irkey = "FORWARD";
+      switchState = 11;
+      break;
+    case 0xFFC23D:
+      irkey = "BACKWARD";
+      switchState = 11;
+      break;
+    case 0xFF22DD:
+      irkey = "PLAY";
+      switchState = 11;
+      break;
+    case 0xFFE01F:
+      irkey = "EQ";
+      switchState = 11;
+      break;
+    case 0xFFA857:
+      irkey = "DOWN";
+      switchState = 11;
+      break;
+    case 0xFF906F:
+      irkey = "UP";
+      switchState = 11;
+      break;
+    case 0xFF9867:
+      irkey = "SWAP";
+      switchState = 11;
+      break;
+    case 0xFFB04F:
+      irkey = "U/SD";
+      switchState = 11;
+      break;
+    case 0xFF30CF:
+      irkey = "1.0";
+      break;
+    case 0xFF18E7:
+      irkey = "2.0";
+      break;
+    case 0xFF7A85:
+      irkey = "3.0";
+      break;
+    case 0xFF10EF:
+      irkey = "4.0";
+      break;
+    case 0xFF38C7:
+      irkey = "5.0";
+      break;
+    case 0xFF5AA5:
+      irkey = "6.0";
+      break;
+    case 0xFF42BD:
+      irkey = "7.0";
+      break;
+    case 0xFF4AB5:
+      irkey = "8.0";
+      break;
+    case 0xFF52AD:
+      irkey = "9.0";
+      break;
+    case 0xFF6897:
+      irkey = "0.0";
+      break;
+  }
 }
 
 // Arduino Time Sync from NTP Server using ESP8266 WiFi module
