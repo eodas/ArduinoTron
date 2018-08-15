@@ -10,40 +10,40 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arduinotron.model.AgentsList;
+
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
-public class AgentConnection {
+public class AgentConnect {
 
-	private final String USER_AGENT = "Mozilla/5.0";
+	private AgentsList agentsList;
 	private String knowledgeDebug = "none";
-	private String arduinoAgent = "http://10.0.0.2...";
-	private static AgentConnection AGENTCONNECTION_INSTANCE = null;
+	private final String USER_AGENT = "Mozilla/5.0";
+	private static AgentConnect AGENTCONNECT_INSTANCE = null;
 
-	private final Logger logger = LoggerFactory.getLogger(AgentConnection.class);
+	private final Logger logger = LoggerFactory.getLogger(AgentConnect.class);
 
-	public AgentConnection(String arduinoAgent, String knowledgeDebug) {
-		this.arduinoAgent = arduinoAgent;
+	public AgentConnect(AgentsList agentsList, String knowledgeDebug) {
+		this.agentsList = agentsList;
 		this.knowledgeDebug = knowledgeDebug;
-		AgentConnection.AGENTCONNECTION_INSTANCE = this;
+		AgentConnect.AGENTCONNECT_INSTANCE = this;
 	}
 
-	public static AgentConnection getInstance() {
-		return AGENTCONNECTION_INSTANCE;
+	public static AgentConnect getInstance() {
+		return AGENTCONNECT_INSTANCE;
 	}
 
 	// HTTP GET request
-	public void sendGet(String command) {
-		String urlString = arduinoAgent + command;
-		if (arduinoAgent.indexOf("http://10.0.0.2...") != -1) {
-			System.err.println("Error: Send Arduino Command no arduinoURL=http:<ip address> defined in arduinotron.properties file.");
-			return;
-		}
-		if (arduinoAgent == null && arduinoAgent.isEmpty()) {
-			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.");
+	public void sendGet(String agentName, String command) {
+		String agentIP = agentsList.getAgent(agentName);
+		if (agentIP == null && agentIP.isEmpty()) {
+			System.err.println("Error: Send Arduino Command no arduinoAgent=[AgentName,http://10.0.0.2,...] "
+					+ "defined in arduinotron.properties file.");
 			return;
 		}
 
+		String urlString = agentIP + command;
 		try {
 			URL url = new URL(urlString);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -78,17 +78,15 @@ public class AgentConnection {
 	}
 
 	// HTTP Post request
-	public void sendPost(String command) {
-		String url = arduinoAgent + command;
-		if (arduinoAgent.indexOf("http://10.0.0.2...") != -1) {
-			System.err.println("Error: Send Arduino Command no arduinoURL=http:<ip address> defined in arduinotron.properties file.");
-			return;
-		}
-		if (arduinoAgent == null && arduinoAgent.isEmpty()) {
-			System.err.println("Error: Send Arduino Command no arduinoAgent=http:<ip address> defined in arduinotron.properties file.");
+	public void sendPost(String agentName, String command) {
+		String agentIP = agentsList.getAgent(agentName);
+		if (agentIP == null && agentIP.isEmpty()) {
+			System.err.println("Error: Send Arduino Command no arduinoAgent=[AgentName,http://10.0.0.2,...] "
+					+ "defined in arduinotron.properties file.");
 			return;
 		}
 
+		String url = agentIP + command;
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -125,7 +123,7 @@ public class AgentConnection {
 			in.close();
 
 			// printing result from response
-			if (knowledgeDebug.indexOf("none") == -1) {			
+			if (knowledgeDebug.indexOf("none") == -1) {
 				System.out.println(response.toString());
 			}
 		} catch (MalformedURLException e) {

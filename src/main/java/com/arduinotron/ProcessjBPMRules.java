@@ -55,10 +55,10 @@ public class ProcessjBPMRules {
 			String knowledgeDebug) {
 		super();
 		this.devices = devices;
+		this.knowledgeDebug = knowledgeDebug;
 		this.kSessionType = kSessionType;
 		this.kSessionName = kSessionName;
 		this.processID = processID;
-		this.knowledgeDebug = knowledgeDebug;
 	}
 
 	public KieSession createKieSession(String kSessionName) {
@@ -107,6 +107,8 @@ public class ProcessjBPMRules {
 		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 	}
 
+//
+	
 	public void main2(String[] args) {
 		try {
 			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
@@ -211,6 +213,7 @@ public class ProcessjBPMRules {
 			for (String key : serverEvent.map.keySet()) {
 				params.put(key, serverEvent.map.get(key));
 			}
+			// try java script: var x = Number("1000")
 			params.put("ilight", serverEvent.getLight());
 
 			// go! - start jBPM processID

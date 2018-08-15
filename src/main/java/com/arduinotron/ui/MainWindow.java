@@ -216,7 +216,7 @@ public class MainWindow {
 		String arduinoCommand = JOptionPane.showInputDialog(arduinoframe, "Send Arduino Command",
 				"Arduino Command: /LED1=ON /GPIO5=OFF", JOptionPane.WARNING_MESSAGE);
 		if (arduinoCommand != null && !arduinoCommand.isEmpty()) {
-			com.arduinotron.server.AgentConnection.getInstance().sendPost(arduinoCommand);
+			com.arduinotron.server.AgentConnect.getInstance().sendPost("TronAgent", arduinoCommand);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class MainWindow {
 		int select = JOptionPane.showConfirmDialog(null, "Arduino Tron Server Status?", "Arduino Tron Server",
 				JOptionPane.YES_NO_CANCEL_OPTION);
 		if (select == 0) {
-			com.arduinotron.server.AgentConnection.getInstance().sendGet("/server?q=status");
+			com.arduinotron.server.AgentConnect.getInstance().sendGet("TronAgent", "/server?q=status");
 		}
 	}
 
@@ -233,7 +233,7 @@ public class MainWindow {
 		int select = JOptionPane.showConfirmDialog(null, "Arduino Tron Server Update?", "Arduino Tron Server",
 				JOptionPane.YES_NO_CANCEL_OPTION);
 		if (select == 0) {
-			com.arduinotron.server.AgentConnection.getInstance().sendGet("/sensor?q=update");
+			com.arduinotron.server.AgentConnect.getInstance().sendGet("TronAgent", "/sensor?q=update");
 		}
 	}
 

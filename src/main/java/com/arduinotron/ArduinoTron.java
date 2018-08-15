@@ -16,9 +16,10 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arduinotron.model.AgentsList;
 import com.arduinotron.model.DevicesList;
 import com.arduinotron.server.IoTServer;
-import com.arduinotron.server.AgentConnection;
+import com.arduinotron.server.AgentConnect;
 import com.arduinotron.ui.MainWindow;
 
 /**
@@ -37,6 +38,7 @@ import com.arduinotron.ui.MainWindow;
  */
 public class ArduinoTron {
 
+	AgentsList agentsList;
 	ArduinoTron arduinoTron;
 	private static IoTServer iotServer = null;
 
@@ -47,17 +49,17 @@ public class ArduinoTron {
 	private static boolean iotrunning = false;
 
 	private int port = 5055;
+	private String knowledgeDebug = "none";
 	private String kSessionType = "createKieSession";
 	private String kSessionName = "ksession-movement";
-	private String knowledgeDebug = "none";
 	private String processID = "com.TrainMovement";
-	private String arduinoAgent = "http://10.0.0.2...";
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 
 	public ArduinoTron(String[] args) {
 
 		this.arduinoTron = this;
+		agentsList = new AgentsList();
 		System.out.println("Arduino Tron AI-IoT :: Internet of Things Drools-jBPM Expert System"
 				+ " using Arduino Tron AI-IoT Processing -version: " + appVer + " (" + buildDate + ")");
 
@@ -103,10 +105,10 @@ public class ArduinoTron {
 			}
 		});
 
-		new AgentConnection(arduinoAgent, knowledgeDebug);
-		ProcessjBPMRules rulesProcessor = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
+		AgentConnect agentConnect = new AgentConnect(agentsList, knowledgeDebug);
+		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
 				knowledgeDebug);
-		startIoTServer(rulesProcessor);
+		startIoTServer(processjBPMRules);
 	}
 
 	public void readProperties() {
@@ -143,7 +145,7 @@ public class ArduinoTron {
 					processID = value;
 				}
 				if (key.indexOf("arduinoAgent") != -1) {
-					arduinoAgent = value;
+					agentsList.parseAgents(value);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -153,8 +155,8 @@ public class ArduinoTron {
 		}
 	}
 
-	public void startIoTServer(ProcessjBPMRules rulesProcessor) {
-		iotServer = new IoTServer(rulesProcessor, port);
+	public void startIoTServer(ProcessjBPMRules processjBPMRules) {
+		iotServer = new IoTServer(processjBPMRules, port);
 		iotServer.start();
 		iotrunning = true;
 	}

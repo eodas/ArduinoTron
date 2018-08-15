@@ -15,14 +15,14 @@ public class IoTServer extends Thread {
 
 	private int port;
 	private boolean alive = true;
-	private ProcessjBPMRules rulesProcessor;
+	private ProcessjBPMRules processjBPMRules;
 	private ServerSocket server = null;
 
 	private final Logger logger = LoggerFactory.getLogger(IoTServer.class);
 
-	public IoTServer(ProcessjBPMRules rulesProcessor, int port) {
+	public IoTServer(ProcessjBPMRules processjBPMRules, int port) {
 		this.port = port;
-		this.rulesProcessor = rulesProcessor;
+		this.processjBPMRules = processjBPMRules;
 		System.out.println("Arduino Tron Drools-jBPM AI-IoT Server, Started Port: " + port);
 	}
 
@@ -46,7 +46,7 @@ public class IoTServer extends Thread {
 			}
 			if ((alive) && (!server.isClosed())) {
 				try {
-					new IoTServerThread(server.accept(), this, rulesProcessor);
+					new IoTServerThread(server.accept(), this, processjBPMRules);
 					incConnection();
 				} catch (SocketException localSocketException) {
 				} catch (IOException ioe) {

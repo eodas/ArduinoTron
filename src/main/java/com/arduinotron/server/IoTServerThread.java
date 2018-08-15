@@ -14,19 +14,19 @@ import com.arduinotron.ProcessjBPMRules;
 import com.arduinotron.model.ServerEvent;
 
 public class IoTServerThread extends Thread {
-	ProcessjBPMRules rulesProcessor;
+	ProcessjBPMRules processjBPMRules;
 
-    PrintStream out;
-    String response = "";	
+	PrintStream out;
+	String response = "";
 	IoTServer ws = null;
 	Socket socket = null;
 
 	private final Logger logger = LoggerFactory.getLogger(IoTServerThread.class);
 
-	public IoTServerThread(Socket socket, IoTServer ws, ProcessjBPMRules rulesProcessor) {
+	public IoTServerThread(Socket socket, IoTServer ws, ProcessjBPMRules processjBPMRules) {
 		this.ws = ws;
 		this.socket = socket;
-		this.rulesProcessor = rulesProcessor;
+		this.processjBPMRules = processjBPMRules;
 		setName("IoT Server Thread");
 
 		start();
@@ -70,7 +70,7 @@ public class IoTServerThread extends Thread {
 							e.printStackTrace();
 						}
 					}
-					response = rulesProcessor.receive(serverEvent);
+					response = processjBPMRules.receive(serverEvent);
 					if (response != null) {
 						out.println(response);
 					}
@@ -102,7 +102,7 @@ public class IoTServerThread extends Thread {
 
 		out.println("HTTP/1.1 " + status + " " + headerText);
 		out.println("Content-Length: 0");
-		out.println(""); //  do not forget this one
+		out.println(""); // do not forget this one
 
 		out.flush();
 		out.close();
