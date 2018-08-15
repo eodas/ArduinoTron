@@ -39,14 +39,14 @@
 #define BUTTON10 D10 // NodeMCU pin GPIO1 (D10-TXD0)
 
 // Update these with WiFi network values
-const char* ssid     = "Executive Order"; // "your-ssid"; //  your network SSID (name)
-const char* password = "SL550eodas"; // "your-password"; // your network password
+const char* ssid     = "your-ssid"; //  your network SSID (name)
+const char* password = "your-password"; // your network password
 
 WiFiClient client;
 WiFiServer webserver(80);
 
 // Update these with Arduino Tron service IP address and unique unit id values
-byte server[] = { 10, 0, 0, 166 }; // Set EOSpy server IP address as bytes
+byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
 String id = "100111"; // Arduino Tron Device unique unit id
 
 const int httpPort = 5055; // Arduino Tron server is running on default port 5055
