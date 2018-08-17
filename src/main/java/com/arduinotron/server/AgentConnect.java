@@ -37,7 +37,7 @@ public class AgentConnect {
 	// HTTP GET request
 	public void sendGet(String agentName, String command) {
 		String agentIP = agentsList.getAgent(agentName);
-		if (agentIP == null && agentIP.isEmpty()) {
+		if (agentIP == "") {
 			System.err.println("Error: Send Arduino Command no arduinoAgent=[AgentName,http://10.0.0.2,...] "
 					+ "defined in arduinotron.properties file.");
 			return;
@@ -80,7 +80,7 @@ public class AgentConnect {
 	// HTTP Post request
 	public void sendPost(String agentName, String command) {
 		String agentIP = agentsList.getAgent(agentName);
-		if (agentIP == null && agentIP.isEmpty()) {
+		if (agentIP == "") {
 			System.err.println("Error: Send Arduino Command no arduinoAgent=[AgentName,http://10.0.0.2,...] "
 					+ "defined in arduinotron.properties file.");
 			return;

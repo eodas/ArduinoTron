@@ -31,6 +31,8 @@
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:script>kcontext.getKnowledgeRuntime().insert(kcontext.getProcessInstance());
+Double i = Double.parseDouble(kcontext.getVariable(&quot;light&quot;));
+kcontext.setVariable(&quot;ilight&quot;,i);
 com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot;,&quot;/LED1=OFF&quot;);
 com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot;,&quot;/LED2=OFF&quot;);
 com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot;,&quot;/LED3=OFF&quot;);

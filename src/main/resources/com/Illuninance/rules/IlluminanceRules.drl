@@ -40,14 +40,25 @@ rule "keypress2.0 Rule"
 		modify( $device );
 end
 
-rule "reedRelay / Proximity Rule"
+rule "keypress4.0 reedRelay"
     when
-        $event : ServerEvent( $eventId : id, (event == "keypress4.0" || event == "keypress8.0") )
+        $event : ServerEvent( $eventId : id, event == "keypress4.0")
       	$device : Devices( $deviceId : id,  $eventId == id )
     then
-		$device.action = "Alert"; 
+		$device.action = "reedRelay"; 
 		$device.status = "Light " + $event.getLight();
-		com.arduinotron.ui.MainWindow.getInstance().log("Rule reedRelay / Proximity: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule keypress4.0 reedRelay: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
+		modify( $device );
+end
+
+rule "keypress8.0 proximity"
+    when
+        $event : ServerEvent( $eventId : id, event == "keypress8.0") 
+      	$device : Devices( $deviceId : id,  $eventId == id )
+    then
+		$device.action = "proximity"; 
+		$device.status = "Light " + $event.getLight();
+		com.arduinotron.ui.MainWindow.getInstance().log("Rule keypress8.0 proximity: " + $event.getEvent() + " - " + $event.getName() + " - " + " Light Value: " + $event.getLight());
 		modify( $device );
 end
 

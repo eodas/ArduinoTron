@@ -522,7 +522,7 @@ public class ServerEvent {
 			setMotion(Boolean.parseBoolean(value));
 			break;
 		default:
-			System.err.println("> Unknown Token " + key + " - " + value);
+			System.out.println("> Extended Event Token " + key + "=" + value);
 		}
 	}
 

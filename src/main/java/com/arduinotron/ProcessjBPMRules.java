@@ -213,8 +213,6 @@ public class ProcessjBPMRules {
 			for (String key : serverEvent.map.keySet()) {
 				params.put(key, serverEvent.map.get(key));
 			}
-			// try java script: var x = Number("1000")
-			params.put("ilight", serverEvent.getLight());
 
 			// go! - start jBPM processID
 			if (processID != null && !processID.isEmpty()) {
@@ -233,14 +231,13 @@ public class ProcessjBPMRules {
 				kSession.dispose();
 				break;
 			case "getKieSession":
-				//
+				// getKieSession(String bpmn);
 				break;
 			case "getRuntimeManager":
 				environment.close();
 				break;
 			}
 		} catch (Exception e) {
-			System.err.println("=============================================================");
 			System.err.println("Unexpected exception caught: " + e.getMessage());
 			e.printStackTrace();
 		}

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.5.0.Final-v20180515-1642-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_countItem" isCollection="false" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_iItem" isCollection="false" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="ItemDefinition_9" isCollection="false" structureRef="java.lang.String"/>
+  <bpmn2:process id="com.iot.irsensor" tns:packageName="com.iot" name="IRSensor Looping" isExecutable="true" processType="Private">
+    <bpmn2:documentation id="Documentation_5"><![CDATA[Looping jBPM]]></bpmn2:documentation>
+    <bpmn2:property id="count" itemSubjectRef="_countItem" name="count"/>
+    <bpmn2:property id="i" itemSubjectRef="_iItem" name="i"/>
+    <bpmn2:property id="id" itemSubjectRef="ItemDefinition_9" name="id"/>
+    <bpmn2:property id="name" itemSubjectRef="ItemDefinition_9" name="name"/>
+    <bpmn2:property id="event" itemSubjectRef="ItemDefinition_9" name="event"/>
+    <bpmn2:exclusiveGateway id="_2" name="Gateway" gatewayDirection="Converging">
+      <bpmn2:incoming>_4-_2</bpmn2:incoming>
+      <bpmn2:incoming>_7-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:scriptTask id="_3" name="Loop">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Loop]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
+      <bpmn2:script>System.out.print(&quot;i = &quot; + i + &quot;, &quot;);
+kcontext.setVariable(&quot;i&quot;, i + 1);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:exclusiveGateway id="_4" name="Gateway" gatewayDirection="Diverging">
+      <bpmn2:incoming>_3-_4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_2</bpmn2:outgoing>
+      <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:scriptTask id="_5" name="Loop Done">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Loop Done]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_4-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_6</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Loop completed&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="_7" name="IR Sensor Loop Init">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[IR Sensor Loop Init]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_7</bpmn2:incoming>
+      <bpmn2:outgoing>_7-_2</bpmn2:outgoing>
+      <bpmn2:script>kcontext.getKnowledgeRuntime().insert(kcontext.getProcessInstance());
+kcontext.setVariable(&quot;i&quot;, 0);
+int z = Integer.parseInt(kcontext.getVariable(&quot;loop&quot;));
+kcontext.setVariable(&quot;count&quot;,z);
+System.out.print(&quot;Loop started, &quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_4-_2" tns:priority="1" name="i &lt; count" sourceRef="_4" targetRef="_2">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return i &lt; count;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_7-_2" sourceRef="_7" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+    <bpmn2:sequenceFlow id="_4-_5" tns:priority="2" name="else" sourceRef="_4" targetRef="_5">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">return true;</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_5-_6" name="event" sourceRef="_5" targetRef="ExclusiveGateway_4"/>
+    <bpmn2:sequenceFlow id="_1-_7" sourceRef="StartEvent_1" targetRef="_7"/>
+    <bpmn2:endEvent id="EndEvent_1" name="End Play">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[End Play]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_2"/>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Start Event]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_1-_7</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="ScriptTask_10" name="Script Task Play">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Script Task Play]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;IoT IR Sensor Script Task PLAY&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="ScriptTask_11" name="Script Task Default">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Script Task Default]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;IoT IR Sensor Device &quot; +  kcontext.getVariable(&quot;name&quot;) + &quot; Event is &quot; + kcontext.getVariable(&quot;event&quot;));
+</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="ScriptTask_12" name="Script Task Mute">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Script Task Mute]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+      <bpmn2:script>com.arduinotron.ui.MainWindow.getInstance().log(&quot;IoT IR Sensor Script Task MUTE&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="play" sourceRef="ExclusiveGateway_4" targetRef="ScriptTask_10">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4" language="http://www.java.com/java">return  KieFunctions.equalsTo(event, &quot;PLAY&quot;);</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="default" sourceRef="ExclusiveGateway_4" targetRef="ScriptTask_11"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="mute" sourceRef="ExclusiveGateway_4" targetRef="ScriptTask_12">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5" language="http://www.java.com/java">return  KieFunctions.equalsTo(event, &quot;MUTE&quot;);</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" sourceRef="ScriptTask_10" targetRef="EndEvent_1"/>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_4" name="Light Level" gatewayDirection="Diverging" default="SequenceFlow_2">
+      <bpmn2:incoming>_5-_6</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:endEvent id="EndEvent_5" name="End Default">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[End Default]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_5"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_6" name="End Mute">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[End Mute]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_6"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="ScriptTask_11" targetRef="EndEvent_5"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" sourceRef="ScriptTask_12" targetRef="EndEvent_6"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.iot.irsensor">
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="_2" isMarkerVisible="true">
+        <dc:Bounds height="48.0" width="48.0" x="211.0" y="83.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2">
+          <dc:Bounds height="15.0" width="47.0" x="211.0" y="131.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="80.0" x="300.0" y="84.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3">
+          <dc:Bounds height="15.0" width="28.0" x="326.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_2" bpmnElement="_4" isMarkerVisible="true">
+        <dc:Bounds height="48.0" width="48.0" x="417.0" y="84.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
+          <dc:Bounds height="15.0" width="47.0" x="417.0" y="132.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_5">
+        <dc:Bounds height="48.0" width="80.0" x="508.0" y="84.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5">
+          <dc:Bounds height="15.0" width="61.0" x="517.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="_7">
+        <dc:Bounds height="48.0" width="80.0" x="100.0" y="84.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7">
+          <dc:Bounds height="30.0" width="67.0" x="106.0" y="93.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="900.0" y="21.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <dc:Bounds height="15.0" width="48.0" x="894.0" y="57.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="20.0" y="90.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6">
+          <dc:Bounds height="15.0" width="58.0" x="9.0" y="126.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_15" bpmnElement="ScriptTask_10" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="755.0" y="14.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8">
+          <dc:Bounds height="15.0" width="87.0" x="766.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_16" bpmnElement="ScriptTask_11" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="755.0" y="82.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9">
+          <dc:Bounds height="15.0" width="103.0" x="758.0" y="99.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_17" bpmnElement="ScriptTask_12" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="755.0" y="149.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_110">
+          <dc:Bounds height="15.0" width="90.0" x="765.0" y="166.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_6" bpmnElement="ExclusiveGateway_4" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="638.0" y="82.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_111">
+          <dc:Bounds height="15.0" width="59.0" x="634.0" y="132.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_6" bpmnElement="EndEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="900.0" y="89.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_112">
+          <dc:Bounds height="15.0" width="64.0" x="886.0" y="125.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_7" bpmnElement="EndEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="901.0" y="156.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_113">
+          <dc:Bounds height="15.0" width="51.0" x="894.0" y="192.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_4-_2" sourceElement="BPMNShape_ExclusiveGateway_2" targetElement="BPMNShape_ExclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="441.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="183.0"/>
+        <di:waypoint xsi:type="dc:Point" x="219.0" y="183.0"/>
+        <di:waypoint xsi:type="dc:Point" x="235.0" y="107.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_118">
+          <dc:Bounds height="15.0" width="46.0" x="300.0" y="184.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_7-_2" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_ExclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="180.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="195.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="211.0" y="107.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_119"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_2-_3" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="259.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="279.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="300.0" y="108.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_3-_4" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ExclusiveGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="380.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="398.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="417.0" y="108.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_4-_5" sourceElement="BPMNShape_ExclusiveGateway_2" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="465.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="486.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="508.0" y="108.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_12">
+          <dc:Bounds height="15.0" width="24.0" x="476.0" y="109.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="_5-_6" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ExclusiveGateway_6">
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="613.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="638.0" y="107.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_13">
+          <dc:Bounds height="15.0" width="29.0" x="599.0" y="109.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="_1-_7" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_ScriptTask_3">
+        <di:waypoint xsi:type="dc:Point" x="56.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="78.0" y="108.0"/>
+        <di:waypoint xsi:type="dc:Point" x="100.0" y="108.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_14"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ExclusiveGateway_6" targetElement="BPMNShape_ScriptTask_15">
+        <di:waypoint xsi:type="dc:Point" x="663.0" y="82.0"/>
+        <di:waypoint xsi:type="dc:Point" x="663.0" y="39.0"/>
+        <di:waypoint xsi:type="dc:Point" x="755.0" y="39.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_15">
+          <dc:Bounds height="15.0" width="22.0" x="678.0" y="40.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_ExclusiveGateway_6" targetElement="BPMNShape_ScriptTask_16">
+        <di:waypoint xsi:type="dc:Point" x="688.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="721.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="755.0" y="107.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_16">
+          <dc:Bounds height="15.0" width="37.0" x="704.0" y="108.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ExclusiveGateway_6" targetElement="BPMNShape_ScriptTask_17">
+        <di:waypoint xsi:type="dc:Point" x="663.0" y="132.0"/>
+        <di:waypoint xsi:type="dc:Point" x="663.0" y="174.0"/>
+        <di:waypoint xsi:type="dc:Point" x="755.0" y="174.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_17">
+          <dc:Bounds height="15.0" width="28.0" x="675.0" y="175.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ScriptTask_15" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="865.0" y="39.0"/>
+        <di:waypoint xsi:type="dc:Point" x="882.0" y="39.0"/>
+        <di:waypoint xsi:type="dc:Point" x="900.0" y="39.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_ScriptTask_16" targetElement="BPMNShape_EndEvent_6">
+        <di:waypoint xsi:type="dc:Point" x="865.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="882.0" y="107.0"/>
+        <di:waypoint xsi:type="dc:Point" x="900.0" y="107.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_19"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_ScriptTask_17" targetElement="BPMNShape_EndEvent_7">
+        <di:waypoint xsi:type="dc:Point" x="865.0" y="174.0"/>
+        <di:waypoint xsi:type="dc:Point" x="883.0" y="174.0"/>
+        <di:waypoint xsi:type="dc:Point" x="901.0" y="174.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_20"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
