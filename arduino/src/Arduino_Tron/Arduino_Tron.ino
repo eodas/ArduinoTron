@@ -7,7 +7,7 @@
 ********************/
 
 //#include <SimpleDHT.h> <-- uncommit for dht11
-//#include <IRrecv.h> <-- uncommit for IR VS1838
+#include <IRrecv.h> // <-- uncommit for IR VS1838
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -58,7 +58,7 @@ String lon = "-77.019868"; // position LON
 const bool readPushButton = false; // Values for the digitalRead value from gpiox button
 const bool readDHT11Temp = false; // Values for the DHT11 digital temperature/humidity sensor
 const bool readLDRLight = false; // Values for the LDR analog photocell light sensor
-const bool readIRSensor = false; // Arduino valuse for IR sensor connected to GPIO2
+const bool readIRSensor = false; // Arduino values for IR sensor connected to GPIO2
 
 const int httpPort = 5055; // Arduino Tron server is running on default port 5055
 // OpenStreetMap Automated Navigation Directions is a map and navigation app for Android default port 5055
@@ -95,6 +95,9 @@ const String TYPE_KEYPRESS_1 = "1.0"; // keypress_1
 const String TYPE_KEYPRESS_2 = "2.0"; // keypress_2
 const String TYPE_REED_RELAY = "4.0"; // reedRelay
 const String TYPE_PROXIMITY = "8.0"; // proximity
+
+// Values to send in &alarm= field
+String alarm = "general";
 
 // Values to send in &alarm= field
 const String ALARM_GENERAL = "general";
@@ -159,11 +162,11 @@ int pinDHT11 = 2;
 int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
-// Arduino valuse for IR sensor connected to GPIO2
+// Arduino values for IR sensor connected to GPIO2
 uint16_t RECV_PIN = D5;
-//IRrecv irrecv(RECV_PIN); <-- uncommit for IR VS1838
-//decode_results results; <-- uncommit for IR VS1838
-String irkey = "1";
+IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
+decode_results results; // <-- uncommit for IR VS1838
+String irkey = "1.0";
 
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
@@ -186,6 +189,7 @@ void setup(void) {
   // Arduino IDE Serial Monitor window to emulate what Arduino Tron sensors are reading
   Serial.begin(115200); // Serial connection from ESP-01 via 3.3v console cable
 
+  // Connect to WiFi network
   Serial.println("Executive Order Corporation - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT)");
   Serial.println("Arduino Tron Drools-jBPM :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM");
   Serial.println("- Arduino Tron Sensor ver " + ver);
@@ -195,9 +199,9 @@ void setup(void) {
   Serial.println(ssid);
 
   if (readIRSensor) {
-    //irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
+    irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
   }
-  delay(800);
+  delay(500);
 }
 
 void loop(void)
@@ -219,7 +223,7 @@ void loop(void)
   }
 
   if (readIRSensor) {
-    readIRDetector(); // Arduino valuse for IR sensor connected to GPIO2
+    readIRDetector(); // Arduino values for IR sensor connected to GPIO2
   }
 
   // Use the Serial Monitor keyboard to emulate sensor inputs to Arduino Tron sketch
@@ -343,11 +347,13 @@ void arduinoTronSend()
       client.print("&accel_x=-0.01&accel_y=-0.07&accel_z=9.79&gyro_x=0.0&gyro_y=-0.0&gyro_z=-0.0&magnet_x=-0.01&magnet_y=-0.07&magnet_z=9.81");
       client.print("&light=91.0&alarm=Temperature&distance=1.6&totalDistance=3.79&motion=false");
       break;
-    case 10: // Arduino valuse for keypress IR sensor connected to GPIO2
+    case 10: // Arduino values for keypress IR sensor connected to GPIO2
       client.print("&keypress=" + irkey); // keypress=irkey
+      client.print("&loop=8");
       break;
     case 11: // Arduino event from IR sensor connected to GPIO2
       client.print("&event=" + irkey);
+      client.print("&loop=8");
       break;
   }
   client.println(" HTTP/1.1");
@@ -470,7 +476,7 @@ void readDHT11() {
   humidity = "41.6"; // String(_humidity);
 }
 
-// Arduino valuse for the LDR analog photocell light sensor
+// Arduino values for the LDR analog photocell light sensor
 // LDR and 10K pulldown resistor are connected to A0
 void readLDRPhotocell() {
   int photocellReading = analogRead(ADC0); // read the LDR input on analog pin A0:
@@ -488,21 +494,21 @@ void readLDRPhotocell() {
   }
 }
 
-// Arduino valuse for IR sensor connected to GPIO2
+// Arduino values for IR sensor connected to GPIO2
 void readIRDetector() {
-  // if (!irrecv.decode(&results)) { <-- uncommit for IR VS1838
-  return;
-  // } <-- uncommit for IR VS1838
-  // unsigned int ircode = results.value; <-- uncommit for IR VS1838
+  if (!irrecv.decode(&results)) { // <-- uncommit for IR VS1838
+    return;
+  } // <-- uncommit for IR VS1838
+  unsigned int ircode = results.value; // <-- uncommit for IR VS1838
 
-  // irrecv.resume(); Receive the next value <-- uncommit for IR VS1838
+  irrecv.resume(); // Receive the next value // <-- uncommit for IR VS1838
 
-  // if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
-  return;
-  // } <-- uncommit for IR VS1838
+  if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
+    return;
+  } // <-- uncommit for IR VS1838
 
   switchState = 10;
-  unsigned int ircodekey = 0; // results.value; <-- uncommit for IR VS1838
+  unsigned int ircodekey = results.value; // <-- uncommit for IR VS1838
   switch (ircodekey) { // Declaring IR remote codes
     case 0xFFA25D:
       irkey = "POWER";

@@ -31,7 +31,7 @@ rule "IoT Device Event Readings"
 end
 
 //declare rule to fire when Temp is over 75
-rule "Raise alarm - Too Warm at Location"
+rule "Temp Raise alarm - Too Warm at Location"
 	when
         $event : ServerEvent( $eventId : id, $temp : temp, $temp > "75" )
       	$device : Devices( $deviceId : id,  $eventId == id )

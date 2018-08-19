@@ -7,7 +7,7 @@
 ********************/
 
 //#include <SimpleDHT.h> <-- uncommit for dht11
-//#include <IRrecv.h> <-- uncommit for IR VS1838
+#include <IRrecv.h> // <-- uncommit for IR VS1838
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -49,11 +49,26 @@ WiFiServer webserver(80);
 byte server[] = { 10, 0, 0, 2 }; // Set EOSpy server IP address as bytes
 String id = "100111"; // Arduino Tron Device unique unit id
 
+// Update these with your LAT/LON GPS position values
+// You can find LAT/LON from an address https://www.latlong.net/convert-address-to-lat-long.html
+String address = "National_Air_Space_Museum_600_Independence_Ave_Washington_DC_20560";
+String lat = "38.888160"; // position LAT National Air Space Museum
+String lon = "-77.019868"; // position LON
+
+// Above are all the fields you need to provide values, the remaining fields are used in the Arduino Tron application
+const bool readPushButton = false; // Values for the digitalRead value from gpiox button
+const bool readDHT11Temp = false; // Values for the DHT11 digital temperature/humidity sensor
+const bool readLDRLight = false; // Values for the LDR analog photocell light sensor
+const bool readIRSensor = false; // Arduino values for IR sensor connected to GPIO2
+
 const int httpPort = 5055; // Arduino Tron server is running on default port 5055
 // OpenStreetMap Automated Navigation Directions is a map and navigation app for Android default port 5055
 
 // Values ?id=334455&timestamp=1521212240&lat=38.888160&lon=-77.019868&speed=0.0&bearing=0.0&altitude=0.0&accuracy=0.0&batt=98.7
 String timestamp = "1521212240"; // timestamp
+String speeds = "0.0";
+String bearing = "0.0";
+String altitude = "0.0";
 String accuracy = "0.0"; // position accuracy
 String batt = "89.7"; // battery value
 String light = "53.4"; // photocell value
@@ -81,6 +96,9 @@ const String TYPE_KEYPRESS_1 = "1.0"; // keypress_1
 const String TYPE_KEYPRESS_2 = "2.0"; // keypress_2
 const String TYPE_REED_RELAY = "4.0"; // reedRelay
 const String TYPE_PROXIMITY = "8.0"; // proximity
+
+// Values to send in &alarm= field
+String alarm = "general";
 
 // Values to send in &alarm= field
 const String ALARM_GENERAL = "general";
@@ -120,7 +138,10 @@ const String ALARM_REMOVING = "removing";
 
 String ver = "1.03E";
 int loopCounter = 1; // loop counter
+int timeCounter = 901; // time counter
+int actionState = 0; // actionState result received command
 int switchState = 0; // digitalRead value from gpiox button
+char readKeyboard = 0; // read serial command
 
 // Arduino Time Sync from NTP Server using ESP8266 WiFi module
 unsigned int localPort = 2390; // local port to listen for UDP packets
@@ -142,29 +163,29 @@ int pinDHT11 = 2;
 int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
-// Arduino valuse for IR sensor connected to GPIO2
+// Arduino values for IR sensor connected to GPIO2
 uint16_t RECV_PIN = D5;
-//IRrecv irrecv(RECV_PIN); <-- uncommit for IR VS1838
-//decode_results results; <-- uncommit for IR VS1838
-String irkey = "1";
+IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
+decode_results results; // <-- uncommit for IR VS1838
+String irkey = "1.0";
 
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
 #include "user_interface.h"
 }
 
-void setup() {
+void setup(void) {
   pinMode(LED0, OUTPUT); // Declaring Arduino LED pin as output
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
-
   digitalWrite(LED0, LOW); // turn the LED off
-  digitalWrite(LED1, LOW);
-  digitalWrite(LED2, LOW);
-  digitalWrite(LED3, LOW);
-  digitalWrite(LED4, LOW);
+
+  pinMode(BUTTON5, INPUT); // Declaring Arduino pins as an inputs
+  pinMode(BUTTON6, INPUT);
+  pinMode(BUTTON7, INPUT);
+  pinMode(BUTTON8, INPUT);
 
   // Arduino IDE Serial Monitor window to emulate what Arduino Tron sensors are reading
   Serial.begin(115200); // Serial connection from ESP-01 via 3.3v console cable
@@ -172,7 +193,7 @@ void setup() {
   // Connect to WiFi network
   Serial.println("Executive Order Corporation - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT)");
   Serial.println("Arduino Tron Drools-jBPM :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM");
-  Serial.println("- Arduino Tron Webserver ver " + ver);
+  Serial.println("- Arduino Tron Web Server ver " + ver);
   Serial.println("Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved");
   Serial.println();
   Serial.print("Connecting to ");
@@ -189,7 +210,7 @@ void setup() {
 
   // Start the arduino tron webserver
   webserver.begin();
-  Serial.println("Arduino Tron Webserver started");
+  Serial.println("Arduino Tron Web Server started");
 
   // Print the IP address
   Serial.print("Use this URL to connect: ");
@@ -198,7 +219,7 @@ void setup() {
   Serial.println("/");
 }
 
-void loop() {
+void loop(void) {
   // Check if a client has connected
   client = webserver.available();
   if (!client) {
@@ -213,12 +234,15 @@ void loop() {
   while (!client.available()) {
     delay(1);
   }
-  webclient();
-  arduinoTronSend();
+  arduinoWebserver();
+  if ((irkey.indexOf("HTTP") == -1) && (alarm.indexOf("HTTP") == -1)) {
+    arduinoTronSend();
+  }
 }
 
 void arduinoTronSend()
 {
+  digitalWrite(LED0, HIGH); // turn the LED on
   getTimeClock(); // get time clock for event timestamp
 
   // Explicitly set the ESP8266 to be a WiFi-client
@@ -226,7 +250,7 @@ void arduinoTronSend()
 
   // Connect to WiFi network
   WiFi.begin(ssid, password);
-  Serial.print("\n\r \n\rExecutive Order Corporation - Arduino Tron Webserver - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT) ");
+  Serial.print("\n\r \n\rExecutive Order Corporation - Arduino Tron Web Server - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT) ");
   Serial.println(timestamp);
 
   // Wait for connection
@@ -244,7 +268,6 @@ void arduinoTronSend()
   Serial.print(switchState);
   Serial.print(" loop ");
   Serial.println(loopCounter);
-  loopCounter++;
 
   if (!client.connect(server, httpPort)) { // http server is running on default port 5055
     Serial.print("Connection Failed Status: ");
@@ -263,12 +286,15 @@ void arduinoTronSend()
   // client.print("&accuracy=" + accuracy);
   client.print("&batt=" + batt);
 
-  // digitalRead GPIO15(D8) send values for textMessage, keypress and alarm
-  client.print("&light=" + light);
-  textMessage = "Movement_Security_Alarm";
+  if (readDHT11Temp) {
+    client.print("&temp=" + temp);
+    client.print("&humidity=" + humidity);
+  }
+
+  // digitalRead GPIO15(D8) send values for web server
   client.print("&textMessage=" + textMessage);
   client.print("&keypress=" + irkey); // keypress=irkey
-  client.print("&alarm=" + ALARM_MOVEMENT);
+  client.print("&alarm=" + alarm);
 
   client.println(" HTTP/1.1");
 
@@ -284,6 +310,11 @@ void arduinoTronSend()
     i++;
   }
 
+  while (client.available())
+  {
+    String line = client.readStringUntil('\r');
+    Serial.print(line);
+  }
   client.stop();
 
   Serial.print("Connection Status: ");
@@ -304,117 +335,83 @@ void arduinoTronSend()
 
   // WiFi.disconnect(); // DO NOT DISCONNECT WIFI IF YOU WANT TO LOWER YOUR POWER DURING LIGHT_SLEEP_T DELLAY !
   // wifi_set_sleep_type(LIGHT_SLEEP_T);
+  digitalWrite(LED0, LOW); // turn the LED off
 }
 
-void webclient() {
+void arduinoWebserver() {
   // Read the first line of the request
   String request = client.readStringUntil('\r');
   Serial.println(request);
   client.flush();
 
-  // Set ledPin according to the request digitalWrite(ledPin, value);
-  int value0 = LOW;
-  if (request.indexOf("/LED0=ON") != -1)  {
-    digitalWrite(LED0, HIGH);
-    value0 = HIGH;
-  }
-  if (request.indexOf("/LED0=OFF") != -1)  {
-    digitalWrite(LED0, LOW);
-    value0 = LOW;
-  }
+  int ind1 = request.indexOf('='); // find location of first =
+  int ind2 = request.indexOf('&', ind1); //find location of first &
+  textMessage = request.substring(ind1 + 1, ind2); // captures textMessage string
 
-  // Set ledPin according to the request digitalWrite(ledPin, value);
-  int value1 = LOW;
-  if (request.indexOf("/LED1=ON") != -1)  {
-    digitalWrite(LED1, HIGH);
-    value1 = HIGH;
-  }
-  if (request.indexOf("/LED1=OFF") != -1)  {
-    digitalWrite(LED1, LOW);
-    value1 = LOW;
-  }
+  ind1 = request.indexOf('=', ind2); //find location of second =
+  ind2 = request.indexOf('&', ind1); //find location of second &
+  irkey = request.substring(ind1 + 1, ind2); // captures keypress string
 
-  // Set ledPin according to the request digitalWrite(ledPin, value);
-  int value2 = LOW;
-  if (request.indexOf("/LED2=ON") != -1)  {
-    digitalWrite(LED2, HIGH);
-    value2 = HIGH;
-  }
-  if (request.indexOf("/LED2=OFF") != -1)  {
-    digitalWrite(LED2, LOW);
-    value2 = LOW;
-  }
-
-  // Set ledPin according to the request digitalWrite(ledPin, value);
-  int value3 = LOW;
-  if (request.indexOf("/LED3=ON") != -1)  {
-    digitalWrite(LED3, HIGH);
-    value3 = HIGH;
-  }
-  if (request.indexOf("/LED3=OFF") != -1)  {
-    digitalWrite(LED3, LOW);
-    value3 = LOW;
-  }
-
-  // Set ledPin according to the request digitalWrite(ledPin, value);
-  int value4 = LOW;
-  if (request.indexOf("/LED4=ON") != -1)  {
-    digitalWrite(LED4, HIGH);
-    value4 = HIGH;
-  }
-  if (request.indexOf("/LED4=OFF") != -1)  {
-    digitalWrite(LED4, LOW);
-    value4 = LOW;
-  }
-
-  //stopping client
-  //client.stop();
+  ind1 = request.indexOf('=', ind2); //find location of third =
+  ind2 = request.indexOf(' ', ind1); //find location of third
+  alarm = request.substring(ind1 + 1, ind2); // captures alarm string
 
   // Return the response
   client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
+  client.println("Content-type:text/html");
+  client.println("Connection: close");
   client.println(""); //  do not forget this one
+
   client.println("<!DOCTYPE HTML>");
-  client.println("<html><head>Arduino Tron Web Server</head><body>");
-  client.println();
-  client.print("<form method=get>");
+  client.println("<html><head>Arduino Tron AI-IoT :: Internet of Things Drools-jBPM</head><body>");
+  client.println("<h1>Arduino Tron Web Server</h1>");
+  client.println("<form action=""#"" method=""GET"">");
+  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
+
+  client.println("Value to send in &textMessage= ");
+  client.println("<select name=""textMessage"">");
+  client.println("<option value=""IoT_Device_Send_Message"">IoT_Device_Send_Message</option>");
+  client.println("<option value=""Server_Room_Temperature"">Server_Room_Temperature</option>");
+  client.println("<option value=""Movement_Security_Alarm"">Movement_Security_Alarm</option>");
+  client.println("<option value=""Illuminance_Alert_Message"">Illuminance_Alert_Message</option>");
+  client.println("<option value=""IoT_Environment_Conditions"">IoT_Environment_Conditions</option>");
+  client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too_Warm_Temp_Raise_Alarm</option>");
+  client.println("</select>");
+  client.println("<br>");
+
+  client.println("Value to send in &keypress= ");
+  client.println("<select name=""keypress"">");
+  client.println("<option value=""1.0"">keypress_1</option>");
+  client.println("<option value=""2.0"">keypress_2</option>");
+  client.println("<option value=""3.0"">keypress_3</option>");
+  client.println("<option value=""4.0"">reedRelay</option>");
+  client.println("<option value=""5.0"">keypress_5</option>");
+  client.println("<option value=""6.0"">keypress_6</option>");
+  client.println("<option value=""7.0"">keypress_7</option>");
+  client.println("<option value=""8.0"">proximity</option>");
+  client.println("<option value=""9.0"">keypress_9</option>");
+  client.println("</select>");
+  client.println("<br>");
+
+  client.println("Value to send in &alarm= ");
+  client.println("<select name=""alarm"">");
+  client.println("<option value=""general"">general</option>");
+  client.println("<option value=""sos"">sos</option>");
+  client.println("<option value=""vibration"">vibration</option>");
+  client.println("<option value=""movement"">movement</option>");
+  client.println("<option value=""overspeed"">overspeed</option>");
+  client.println("<option value=""geofenceEnter"">geofenceEnter</option>");
+  client.println("<option value=""geofenceExit"">geofenceExit</option>");
+  client.println("<option value=""temperature"">temperature</option>");
+  client.println("<option value=""tampering"">tampering</option>");
+  client.println("</select>");
   client.println("<br><br>");
 
-  client.print("Led pin is now: ");
-
-  if (value4 == HIGH) {
-    client.print("On");
-  } else {
-    client.print("Off");
-  }
-  client.println("<br><br>");
-  client.println("<a href=\"/LED0=ON\"\"><button>Turn LED-0 On </button></a>");
-  client.println("<a href=\"/LED0=OFF\"\"><button>Turn LED-0 Off </button></a><br />");
-  client.println("<a href=\"/LED1=ON\"\"><button>Turn LED-1 On </button></a>");
-  client.println("<a href=\"/LED1=OFF\"\"><button>Turn LED-1 Off </button></a><br />");
-  client.println("<a href=\"/LED2=ON\"\"><button>Turn LED-2 On </button></a>");
-  client.println("<a href=\"/LED2=OFF\"\"><button>Turn LED-2 Off </button></a><br />");
-  client.println("<a href=\"/LED3=ON\"\"><button>Turn LED-3 On </button></a>");
-  client.println("<a href=\"/LED3=OFF\"\"><button>Turn LED-3 Off </button></a><br />");
-  client.println("<a href=\"/LED4=ON\"\"><button>Turn LED-4 On </button></a>");
-  client.println("<a href=\"/LED4=OFF\"\"><button>Turn LED-4 Off </button></a><br />");
-  client.println("<br><br>");
-
-client.println("<select name=carlist>");
-  client.println("<option value=volvo>Volvo</option>");
-  client.println("<option value=saab>Saab</option>");
-  client.println("<option value=opel>Opel</option>");
-  client.println("<option value=audi>Audi</option>");
-client.println("</select>");
-  
-//  client.println("<input type=text name=textbox size=25 value=Enter_your_name_here!> Enter your name here!<br>");
-//  client.println("<input type=text name=namebox size=25 value=Something> Enter Something here!<br>");
-
-  client.println("<br><input type=submit value=Submit><br>");
+  client.println("Send Message <input type=submit value=Send><br>");
   client.println("</body></html>");
 
   delay(1);
-  Serial.println("Client disonnected");
+  Serial.println("Client disconnected");
   Serial.println("");
 }
 
@@ -480,3 +477,4 @@ unsigned long sendNTPpacket(IPAddress& address)
   udp.write(packetBuffer, NTP_PACKET_SIZE);
   udp.endPacket();
 }
+

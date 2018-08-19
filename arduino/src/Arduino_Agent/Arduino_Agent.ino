@@ -24,6 +24,7 @@
 const char* ssid     = "your-ssid"; //  your network SSID (name)
 const char* password = "your-password"; // your network password
 
+WiFiClient client;
 WiFiServer server(80);
 
 String ver = "1.03E";
@@ -77,7 +78,7 @@ void setup() {
 
 void loop() {
   // Check if a client has connected
-  WiFiClient client = server.available();
+  client = server.available();
   if (!client) {
     return;
   }
@@ -86,10 +87,15 @@ void loop() {
   Serial.print("new client connection, loop ");
   Serial.println(loopCounter);
   loopCounter++;
+
   while (!client.available()) {
     delay(1);
   }
+  arduinoWebserver();
+}
 
+void arduinoWebserver()
+{
   // Read the first line of the request
   String request = client.readStringUntil('\r');
   Serial.println(request);
@@ -178,6 +184,6 @@ void loop() {
   client.println("</html>");
 
   delay(1);
-  Serial.println("Client disonnected");
+  Serial.println("Client disconnected");
   Serial.println("");
 }
