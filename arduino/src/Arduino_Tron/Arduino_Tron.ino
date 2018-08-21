@@ -6,8 +6,8 @@
   - Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved
 ********************/
 
-//#include <SimpleDHT.h> <-- uncommit for dht11
-#include <IRrecv.h> // <-- uncommit for IR VS1838
+//#include <SimpleDHT.h> // <-- uncommit for dht11
+//#include <IRrecv.h> // <-- uncommit for IR VS1838
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -164,8 +164,8 @@ float photocellLight; // Variable to hold last analog light value
 
 // Arduino values for IR sensor connected to GPIO2
 uint16_t RECV_PIN = D5;
-IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
-decode_results results; // <-- uncommit for IR VS1838
+//IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
+//decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
 
 // Required for LIGHT_SLEEP_T delay mode
@@ -199,7 +199,7 @@ void setup(void) {
   Serial.println(ssid);
 
   if (readIRSensor) {
-    irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
+    //  irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
   }
   delay(500);
 }
@@ -496,19 +496,19 @@ void readLDRPhotocell() {
 
 // Arduino values for IR sensor connected to GPIO2
 void readIRDetector() {
-  if (!irrecv.decode(&results)) { // <-- uncommit for IR VS1838
-    return;
-  } // <-- uncommit for IR VS1838
-  unsigned int ircode = results.value; // <-- uncommit for IR VS1838
+  //if (!irrecv.decode(&results)) { // <-- uncommit for IR VS1838
+  return;
+  //} // <-- uncommit for IR VS1838
+  //unsigned int ircode = results.value; // <-- uncommit for IR VS1838
 
-  irrecv.resume(); // Receive the next value // <-- uncommit for IR VS1838
+  //irrecv.resume(); // Receive the next value // <-- uncommit for IR VS1838
 
-  if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
-    return;
-  } // <-- uncommit for IR VS1838
+  //if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
+  return;
+  //} // <-- uncommit for IR VS1838
 
   switchState = 10;
-  unsigned int ircodekey = results.value; // <-- uncommit for IR VS1838
+  unsigned int ircodekey = 0; // = results.value; // <-- uncommit for IR VS1838
   switch (ircodekey) { // Declaring IR remote codes
     case 0xFFA25D:
       irkey = "POWER";

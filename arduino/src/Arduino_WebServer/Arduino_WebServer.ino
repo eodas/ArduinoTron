@@ -6,8 +6,8 @@
   - Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved
 ********************/
 
-//#include <SimpleDHT.h> <-- uncommit for dht11
-#include <IRrecv.h> // <-- uncommit for IR VS1838
+//#include <SimpleDHT.h> // <-- uncommit for dht11
+//#include <IRrecv.h> // <-- uncommit for IR VS1838
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -165,8 +165,8 @@ float photocellLight; // Variable to hold last analog light value
 
 // Arduino values for IR sensor connected to GPIO2
 uint16_t RECV_PIN = D5;
-IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
-decode_results results; // <-- uncommit for IR VS1838
+//IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
+//decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
 
 // Required for LIGHT_SLEEP_T delay mode
@@ -363,12 +363,12 @@ void arduinoWebserver() {
   client.println(""); //  do not forget this one
 
   client.println("<!DOCTYPE HTML>");
-  client.println("<html><head>Arduino Tron AI-IoT :: Internet of Things Drools-jBPM</head><body>");
-  client.println("<h1>Arduino Tron Web Server</h1>");
+  client.println("<html><head>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
+  client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
   client.println("<form action=""#"" method=""GET"">");
   client.println("<p>Use the drop-down list to select the parameter values to send</p>");
 
-  client.println("Value to send in &textMessage= ");
+  client.println("Value to send in textMessage= ");
   client.println("<select name=""textMessage"">");
   client.println("<option value=""IoT_Device_Send_Message"">IoT_Device_Send_Message</option>");
   client.println("<option value=""Server_Room_Temperature"">Server_Room_Temperature</option>");
@@ -379,7 +379,7 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br>");
 
-  client.println("Value to send in &keypress= ");
+  client.println("Value to send in keypress= ");
   client.println("<select name=""keypress"">");
   client.println("<option value=""1.0"">keypress_1</option>");
   client.println("<option value=""2.0"">keypress_2</option>");
@@ -393,7 +393,7 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br>");
 
-  client.println("Value to send in &alarm= ");
+  client.println("Value to send in alarm= ");
   client.println("<select name=""alarm"">");
   client.println("<option value=""general"">general</option>");
   client.println("<option value=""sos"">sos</option>");
@@ -408,7 +408,7 @@ void arduinoWebserver() {
   client.println("<br><br>");
 
   client.println("Send Message <input type=submit value=Send><br>");
-  client.println("</body></html>");
+  client.println("</form></body></html>");
 
   delay(1);
   Serial.println("Client disconnected");
