@@ -227,7 +227,7 @@ void loop(void) {
   }
 
   // Wait until the client sends some data
-  Serial.print("new client connection, loop ");
+  Serial.print("New client connection, loop ");
   Serial.println(loopCounter);
   loopCounter++;
 
@@ -363,12 +363,18 @@ void arduinoWebserver() {
   client.println(""); //  do not forget this one
 
   client.println("<!DOCTYPE HTML>");
-  client.println("<html><head>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
+  client.println("<html><head><style type = ""text/css"">");
+
+  client.println("body{background-color : powderblue;}");
+  client.println("h1{color:black; font-family : arial;}");
+  client.println("p{color:yellow; font-family : verdana;}");
+
+  client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
   client.println("<form action=""#"" method=""GET"">");
   client.println("<p>Use the drop-down list to select the parameter values to send</p>");
 
-  client.println("Value to send in textMessage= ");
+  client.println("Value to send in textMessage = ");
   client.println("<select name=""textMessage"">");
   client.println("<option value=""IoT_Device_Send_Message"">IoT_Device_Send_Message</option>");
   client.println("<option value=""Server_Room_Temperature"">Server_Room_Temperature</option>");
@@ -379,7 +385,7 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br>");
 
-  client.println("Value to send in keypress= ");
+  client.println("Value to send in keypress = ");
   client.println("<select name=""keypress"">");
   client.println("<option value=""1.0"">keypress_1</option>");
   client.println("<option value=""2.0"">keypress_2</option>");
@@ -393,7 +399,7 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br>");
 
-  client.println("Value to send in alarm= ");
+  client.println("Value to send in alarm = ");
   client.println("<select name=""alarm"">");
   client.println("<option value=""general"">general</option>");
   client.println("<option value=""sos"">sos</option>");
@@ -407,7 +413,8 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br><br>");
 
-  client.println("Send Message <input type=submit value=Send><br>");
+  client.println("Send Arduino Tron Message <input type=submit value=Send><br><br>");
+  client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
   client.println("</form></body></html>");
 
   delay(1);

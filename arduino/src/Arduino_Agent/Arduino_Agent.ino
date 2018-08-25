@@ -162,25 +162,25 @@ void arduinoWebserver()
   client.println(""); //  do not forget this one
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
-
-  client.print("Led pin is now: ");
-
-  if (value4 == HIGH) {
+  client.println("<h3>Arduino Tron Agent MQTT AI-IoT :: Internet of Things Drools-jBPM</h3>");
+  client.print("LED PIN-1 is now: ");
+  if (value1 == HIGH) {
     client.print("On");
   } else {
     client.print("Off");
   }
   client.println("<br><br>");
   client.println("<a href=\"/LED0=ON\"\"><button>Turn LED-0 On </button></a>");
-  client.println("<a href=\"/LED0=OFF\"\"><button>Turn LED-0 Off </button></a><br />");
+  client.println("<a href=\"/LED0=OFF\"\"><button>Turn LED-0 Off </button></a><br>");
   client.println("<a href=\"/LED1=ON\"\"><button>Turn LED-1 On </button></a>");
-  client.println("<a href=\"/LED1=OFF\"\"><button>Turn LED-1 Off </button></a><br />");
+  client.println("<a href=\"/LED1=OFF\"\"><button>Turn LED-1 Off </button></a><br>");
   client.println("<a href=\"/LED2=ON\"\"><button>Turn LED-2 On </button></a>");
-  client.println("<a href=\"/LED2=OFF\"\"><button>Turn LED-2 Off </button></a><br />");
+  client.println("<a href=\"/LED2=OFF\"\"><button>Turn LED-2 Off </button></a><br>");
   client.println("<a href=\"/LED3=ON\"\"><button>Turn LED-3 On </button></a>");
-  client.println("<a href=\"/LED3=OFF\"\"><button>Turn LED-3 Off </button></a><br />");
+  client.println("<a href=\"/LED3=OFF\"\"><button>Turn LED-3 Off </button></a><br>");
   client.println("<a href=\"/LED4=ON\"\"><button>Turn LED-4 On </button></a>");
-  client.println("<a href=\"/LED4=OFF\"\"><button>Turn LED-4 Off </button></a><br />");
+  client.println("<a href=\"/LED4=OFF\"\"><button>Turn LED-4 Off </button></a><br>");
+  client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
   client.println("</html>");
 
   delay(1);

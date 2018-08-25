@@ -199,7 +199,7 @@ void setup(void) {
   Serial.println(ssid);
 
   if (readIRSensor) {
-    //  irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
+//  irrecv.enableIRIn(); // Start the receiver <-- uncommit for IR VS1838
   }
   delay(500);
 }
@@ -349,11 +349,9 @@ void arduinoTronSend()
       break;
     case 10: // Arduino values for keypress IR sensor connected to GPIO2
       client.print("&keypress=" + irkey); // keypress=irkey
-      client.print("&loop=8");
       break;
     case 11: // Arduino event from IR sensor connected to GPIO2
       client.print("&event=" + irkey);
-      client.print("&loop=8");
       break;
   }
   client.println(" HTTP/1.1");
@@ -496,16 +494,16 @@ void readLDRPhotocell() {
 
 // Arduino values for IR sensor connected to GPIO2
 void readIRDetector() {
-  //if (!irrecv.decode(&results)) { // <-- uncommit for IR VS1838
-  return;
-  //} // <-- uncommit for IR VS1838
-  //unsigned int ircode = results.value; // <-- uncommit for IR VS1838
+//if (!irrecv.decode(&results)) { // <-- uncommit for IR VS1838
+    return;
+//} // <-- uncommit for IR VS1838
+//unsigned int ircode = results.value; // <-- uncommit for IR VS1838
 
-  //irrecv.resume(); // Receive the next value // <-- uncommit for IR VS1838
+//irrecv.resume(); // Receive the next value // <-- uncommit for IR VS1838
 
-  //if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
-  return;
-  //} // <-- uncommit for IR VS1838
+//if (ircode > 0xFFFFFF) { // IR Detector = REPEAT <-- uncommit for IR VS1838
+    return;
+//} // <-- uncommit for IR VS1838
 
   switchState = 10;
   unsigned int ircodekey = 0; // = results.value; // <-- uncommit for IR VS1838
