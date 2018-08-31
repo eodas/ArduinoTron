@@ -12,31 +12,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define ADC0 A0 // NodeMCU pin Analog ADC0 (A0)
-
-#define LED0 D0 // NodeMCU pin GPIO16 (D0)
-#define LED1 D1 // NodeMCU pin GPIO5 (D1)
-#define LED2 D2 // NodeMCU pin GPIO4 (D2)
-#define LED3 D3 // NodeMCU pin GPIO0 (D3)
-#define LED4 D4 // NodeMCU pin GPIO2 (D4-onboard)
-#define LED5 D5 // NodeMCU pin GPIO14 (D5)
-#define LED6 D6 // NodeMCU pin GPIO12 (D6)
-#define LED7 D7 // NodeMCU pin GPIO13 (D7)
-#define LED8 D8 // NodeMCU pin GPIO15 (D8)
-#define LED9 D9 // NodeMCU pin GPIO3 (D9-RXD0)
-#define LED10 D10 // NodeMCU pin GPIO1 (D10-TXD0)
-
-#define BUTTON0 D0 // NodeMCU pin GPIO16 (D0)
-#define BUTTON1 D1 // NodeMCU pin GPIO5 (D1)
-#define BUTTON2 D2 // NodeMCU pin GPIO4 (D2)
-#define BUTTON3 D3 // NodeMCU pin GPIO0 (D3)
-#define BUTTON4 D4 // NodeMCU pin GPIO2 (D4)
-#define BUTTON5 D5 // NodeMCU pin GPIO14 (D5)
-#define BUTTON6 D6 // NodeMCU pin GPIO12 (D6)
-#define BUTTON7 D7 // NodeMCU pin GPIO13 (D7)
-#define BUTTON8 D8 // NodeMCU pin GPIO15 (D8)
-#define BUTTON9 D9 // NodeMCU pin GPIO3 (D9-RXD0)
-#define BUTTON10 D10 // NodeMCU pin GPIO1 (D10-TXD0)
+const short int LED0 = 2; // GPIO2
 
 // Update these with WiFi network values
 const char* ssid     = "your-ssid"; //  your network SSID (name)
@@ -156,7 +132,7 @@ unsigned long milsec = 0;
 unsigned long epoch = 0;
 
 // DHT11 digital temperature and humidity sensor pin Vout (sense)
-int pinDHT11 = 2;
+int pinDHT11 = 2; // GPIO2
 //SimpleDHT11 dht11; <-- uncommit for dht11
 
 // LDR Photocell light interface for NodeMCU
@@ -164,7 +140,7 @@ int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
 // Arduino values for IR sensor connected to GPIO2
-uint16_t RECV_PIN = D5;
+uint16_t RECV_PIN = 2; // GPIO2
 //IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
 //decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
@@ -176,16 +152,7 @@ extern "C" {
 
 void setup(void) {
   pinMode(LED0, OUTPUT); // Declaring Arduino LED pin as output
-  pinMode(LED1, OUTPUT);
-  pinMode(LED2, OUTPUT);
-  pinMode(LED3, OUTPUT);
-  pinMode(LED4, OUTPUT);
   digitalWrite(LED0, LOW); // turn the LED off
-
-  pinMode(BUTTON5, INPUT); // Declaring Arduino pins as an inputs
-  pinMode(BUTTON6, INPUT);
-  pinMode(BUTTON7, INPUT);
-  pinMode(BUTTON8, INPUT);
 
   // Arduino IDE Serial Monitor window to emulate what Arduino Tron sensors are reading
   Serial.begin(115200); // Serial connection from ESP-01 via 3.3v console cable
@@ -193,7 +160,7 @@ void setup(void) {
   // Connect to WiFi network
   Serial.println("Executive Order Corporation - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT)");
   Serial.println("Arduino Tron Drools-jBPM :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM");
-  Serial.println("- Arduino Tron Web Server ver " + ver);
+  Serial.println("- Arduino Tron Web Server ESP-01 ver " + ver);
   Serial.println("Copyright © 1978, 2018: Executive Order Corporation, All Rights Reserved");
   Serial.println();
   Serial.print("Connecting to ");
@@ -210,7 +177,7 @@ void setup(void) {
 
   // Start the arduino tron webserver
   webserver.begin();
-  Serial.println("Arduino Tron Web Server started");
+  Serial.println("Arduino Tron Web Server ESP-01 started");
 
   // Print the IP address
   Serial.print("Use this URL to connect: ");
@@ -250,7 +217,7 @@ void arduinoTronSend()
 
   // Connect to WiFi network
   WiFi.begin(ssid, password);
-  Serial.print("\n\r \n\rExecutive Order Corporation - Arduino Tron Web Server - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT) ");
+  Serial.print("\n\r \n\rExecutive Order Corporation - Arduino Tron Web Server ESP-01 - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT) ");
   Serial.println(timestamp);
 
   // Wait for connection
@@ -370,9 +337,8 @@ void arduinoWebserver() {
   client.println("p{color:yellow; font-family : verdana;}");
 
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
-  client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
+  client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
-  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");
