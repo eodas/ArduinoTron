@@ -372,7 +372,6 @@ void arduinoWebserver() {
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
   client.println("<form action=""#"" method=""GET"">");
-  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");
@@ -381,7 +380,7 @@ void arduinoWebserver() {
   client.println("<option value=""Movement_Security_Alarm"">Movement Security Alarm</option>");
   client.println("<option value=""Illuminance_Alert_Message"">Illuminance Alert Message</option>");
   client.println("<option value=""IoT_Environment_Conditions"">IoT Environment Conditions</option>");
-  client.println("<option value=""Warm_System_Raise_Alarm"">Warm System Raise Alarm</option>");
+  client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too Warm Temp Raise Alarm</option>");
   client.println("</select>");
   client.println("<br>");
 

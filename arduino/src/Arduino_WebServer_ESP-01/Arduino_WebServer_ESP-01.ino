@@ -14,6 +14,30 @@
 
 const short int LED0 = 2; // GPIO2
 
+//#define LED0 D0 // NodeMCU pin GPIO16 (D0)
+//#define LED1 D1 // NodeMCU pin GPIO5 (D1)
+//#define LED2 D2 // NodeMCU pin GPIO4 (D2)
+//#define LED3 D3 // NodeMCU pin GPIO0 (D3)
+//#define LED4 D4 // NodeMCU pin GPIO2 (D4-onboard)
+//#define LED5 D5 // NodeMCU pin GPIO14 (D5)
+//#define LED6 D6 // NodeMCU pin GPIO12 (D6)
+//#define LED7 D7 // NodeMCU pin GPIO13 (D7)
+//#define LED8 D8 // NodeMCU pin GPIO15 (D8)
+//#define LED9 D9 // NodeMCU pin GPIO3 (D9-RXD0)
+//#define LED10 D10 // NodeMCU pin GPIO1 (D10-TXD0)
+
+//#define BUTTON0 D0 // NodeMCU pin GPIO16 (D0)
+//#define BUTTON1 D1 // NodeMCU pin GPIO5 (D1)
+//#define BUTTON2 D2 // NodeMCU pin GPIO4 (D2)
+//#define BUTTON3 D3 // NodeMCU pin GPIO0 (D3)
+//#define BUTTON4 D4 // NodeMCU pin GPIO2 (D4)
+//#define BUTTON5 D5 // NodeMCU pin GPIO14 (D5)
+//#define BUTTON6 D6 // NodeMCU pin GPIO12 (D6)
+//#define BUTTON7 D7 // NodeMCU pin GPIO13 (D7)
+//#define BUTTON8 D8 // NodeMCU pin GPIO15 (D8)
+//#define BUTTON9 D9 // NodeMCU pin GPIO3 (D9-RXD0)
+//#define BUTTON10 D10 // NodeMCU pin GPIO1 (D10-TXD0)
+
 // Update these with WiFi network values
 const char* ssid     = "your-ssid"; //  your network SSID (name)
 const char* password = "your-password"; // your network password
@@ -152,7 +176,16 @@ extern "C" {
 
 void setup(void) {
   pinMode(LED0, OUTPUT); // Declaring Arduino LED pin as output
+  //pinMode(LED1, OUTPUT);
+  //pinMode(LED2, OUTPUT);
+  //pinMode(LED3, OUTPUT);
+  //pinMode(LED4, OUTPUT);
   digitalWrite(LED0, LOW); // turn the LED off
+
+  //pinMode(BUTTON5, INPUT); // Declaring Arduino pins as an inputs
+  //pinMode(BUTTON6, INPUT);
+  //pinMode(BUTTON7, INPUT);
+  //pinMode(BUTTON8, INPUT);
 
   // Arduino IDE Serial Monitor window to emulate what Arduino Tron sensors are reading
   Serial.begin(115200); // Serial connection from ESP-01 via 3.3v console cable
@@ -347,7 +380,7 @@ void arduinoWebserver() {
   client.println("<option value=""Movement_Security_Alarm"">Movement Security Alarm</option>");
   client.println("<option value=""Illuminance_Alert_Message"">Illuminance Alert Message</option>");
   client.println("<option value=""IoT_Environment_Conditions"">IoT Environment Conditions</option>");
-  client.println("<option value=""Warm_System_Raise_Alarm"">Warm System Raise Alarm</option>");
+  client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too Warm Temp Raise Alarm</option>");
   client.println("</select>");
   client.println("<br>");
 
