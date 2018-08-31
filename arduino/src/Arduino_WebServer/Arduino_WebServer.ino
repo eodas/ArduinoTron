@@ -372,6 +372,7 @@ void arduinoWebserver() {
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
   client.println("<form action=""#"" method=""GET"">");
+  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");
