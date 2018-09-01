@@ -65,7 +65,7 @@ public class IoTServerThread extends Thread {
 							serverEvent.add(key, value);
 
 						} catch (IndexOutOfBoundsException e) {
-							System.err.println("Unexpected exception caught: " + e.getMessage());
+							System.err.println("Error: Unexpected exception caught: " + e.getMessage());
 							e.printStackTrace();
 						}
 					}

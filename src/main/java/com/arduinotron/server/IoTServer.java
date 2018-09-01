@@ -33,11 +33,11 @@ public class IoTServer extends Thread {
 			server.setReuseAddress(true);
 		} catch (Exception ee) {
 			alive = false;
-			System.err.println("Port " + port + " is already in use.\n" + "Please select another port for IoT Server.");
+			System.err.println("Error: Port " + port + " is already in use.\n" + "Please select another port for IoT Server.");
 		}
 		while (alive) {
 			if (getConnection() >= maxConnections) {
-				System.err.println("Too many connections...");
+				System.err.println("Error: Too many connections...");
 				while (getConnection() >= maxConnections)
 					try {
 						Thread.sleep(50L);

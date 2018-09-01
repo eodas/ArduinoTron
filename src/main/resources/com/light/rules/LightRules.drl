@@ -1,4 +1,4 @@
-package com.Illuninance
+package com.Light
 
 // list import classes
 import com.arduinotron.model.Devices;
@@ -62,9 +62,9 @@ rule "keypress8.0 proximity"
 		modify( $device );
 end
 
-//declare any ruleflow-group rules to fire in the jBPM AI_IoT.Illuminance process
+//declare any ruleflow-group rules to fire in the jBPM com.Light process
 rule "Rule for device ID: 100111"
-	ruleflow-group "Illuminance Rule Flow"
+	ruleflow-group "Light Rule Flow"
 	when
 		$event : ServerEvent( $eventId : id, $eventId == "100111" )
 	then
@@ -72,7 +72,7 @@ rule "Rule for device ID: 100111"
 end
 
 rule "Rule for device ID: 100222"
-	ruleflow-group "Illuminance Rule Flow"
+	ruleflow-group "Light Rule Flow"
 	when
 		$event : ServerEvent( $eventId : id, $eventId == "100222" )
 	then

@@ -50,9 +50,9 @@ public class ArduinoTron {
 
 	private int port = 5055;
 	private String knowledgeDebug = "none";
-	private String kSessionType = "createKieSession";
-	private String kSessionName = "ksession-movement";
-	private String processID = "com.TrainMovement";
+	private String kSessionType = ""; // defaut createKieSession
+	private String kSessionName = ""; // "ksession-movement";
+	private String processID = ""; // com.TrainMovement";
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 
@@ -106,6 +106,19 @@ public class ArduinoTron {
 		});
 
 		AgentConnect agentConnect = new AgentConnect(agentsList, knowledgeDebug);
+
+		if (kSessionType == "") {
+			kSessionType = "createKieSession";
+		}
+		if (kSessionName == "") {
+			System.err.println("Error: Must set a kSessionName == defined in arduinotron.properties file.");
+			return;
+		}
+		if (processID == "") {
+			System.err.println("Error: Must set a processID == defined in arduinotron.properties file.");
+			return;
+		}
+		
 		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
 				knowledgeDebug);
 		startIoTServer(processjBPMRules);

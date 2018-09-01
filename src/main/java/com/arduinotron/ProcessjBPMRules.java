@@ -73,7 +73,7 @@ public class ProcessjBPMRules {
 		// kContainer.getKieBase("rules");
 		kSession = kContainer.newKieSession(kSessionName);
 		if (kSession == null) {
-			System.err.println("ERROR: Cannot find <ksession name=" + kSessionName + "> match in kmodule.xml file.");
+			System.err.println("Error: Cannot find <ksession name=" + kSessionName + "> match in kmodule.xml file.");
 			return null;
 		}
 
@@ -238,7 +238,7 @@ public class ProcessjBPMRules {
 				break;
 			}
 		} catch (Exception e) {
-			System.err.println("Unexpected exception caught: " + e.getMessage());
+			System.err.println("Error: Unexpected exception caught: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return (response);

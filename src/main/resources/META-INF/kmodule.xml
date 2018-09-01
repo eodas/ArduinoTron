@@ -19,9 +19,9 @@
 		</ksession>
 	</kbase>
 
-	<kbase name="kbaseIlluninance"
-		packages="com.Illuninance.rules, com.Illuninance.process">
-		<ksession name="ksession-Illuninance">
+	<kbase name="kbaseLight"
+		packages="com.light.rules, com.light.process">
+		<ksession name="ksession-light">
 		</ksession>
 	</kbase>
 
