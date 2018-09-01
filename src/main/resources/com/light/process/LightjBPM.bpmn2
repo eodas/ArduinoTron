@@ -3,7 +3,7 @@
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.5.0.Final-v20180515-1642-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="ItemDefinition_19" isCollection="false" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="ItemDefinition_8" isCollection="false" structureRef="java.lang.Double"/>
-  <bpmn2:process id="AI_IoT.Illuminance.jBPM" tns:packageName="com.Illuninance" name="Arduino Tron Illuminance jBPM" isExecutable="true" processType="Private">
+  <bpmn2:process id="com.Light" tns:packageName="com.LightPackage" name="Arduino Tron Light jBPM" isExecutable="true" processType="Private">
     <bpmn2:property id="id" itemSubjectRef="ItemDefinition_19" name="id"/>
     <bpmn2:property id="name" itemSubjectRef="ItemDefinition_19" name="name"/>
     <bpmn2:property id="event" itemSubjectRef="ItemDefinition_19" name="event"/>
@@ -22,10 +22,10 @@
       </bpmn2:extensionElements>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Illuminance Prepare Facts">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Light Prepare Facts">
       <bpmn2:extensionElements>
         <tns:metaData name="elementname">
-          <tns:metaValue><![CDATA[Illuminance Prepare Facts]]></tns:metaValue>
+          <tns:metaValue><![CDATA[Light Prepare Facts]]></tns:metaValue>
         </tns:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
@@ -111,10 +111,10 @@ com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot
       <bpmn2:terminateEventDefinition id="TerminateEventDefinition_3"/>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="ScriptTask_4" targetRef="EndEvent_1"/>
-    <bpmn2:businessRuleTask id="BusinessRuleTask_1" tns:ruleFlowGroup="Illuminance Rule Flow" name="Illuminance Business Rule">
+    <bpmn2:businessRuleTask id="BusinessRuleTask_1" tns:ruleFlowGroup="Light Rule Flow" name="Light Business Rule">
       <bpmn2:extensionElements>
         <tns:metaData name="elementname">
-          <tns:metaValue><![CDATA[Illuminance Business Rule]]></tns:metaValue>
+          <tns:metaValue><![CDATA[Light Business Rule]]></tns:metaValue>
         </tns:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
@@ -165,7 +165,7 @@ com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot
     </bpmn2:textAnnotation>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="AI_IoT.Illuminance.jBPM">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.Light">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="22.0" y="151.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_1" labelStyle="BPMNLabelStyle_1">
@@ -175,7 +175,7 @@ com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_1" isExpanded="true">
         <dc:Bounds height="50.0" width="110.0" x="113.0" y="144.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_2" labelStyle="BPMNLabelStyle_1">
-          <dc:Bounds height="30.0" width="80.0" x="128.0" y="154.0"/>
+          <dc:Bounds height="15.0" width="107.0" x="114.0" y="161.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
@@ -217,7 +217,7 @@ com.arduinotron.server.AgentConnect.getInstance().sendPost(&quot;LightAgent&quot
       <bpmndi:BPMNShape id="BPMNShape_BusinessRuleTask_1" bpmnElement="BusinessRuleTask_1" isExpanded="true">
         <dc:Bounds height="50.0" width="110.0" x="288.0" y="144.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_10">
-          <dc:Bounds height="30.0" width="85.0" x="300.0" y="154.0"/>
+          <dc:Bounds height="30.0" width="92.0" x="297.0" y="154.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
