@@ -12,9 +12,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const short int LED0 = 2; // GPIO2
+//#define ADC0 A0 // NodeMCU pin Analog ADC0 (A0)
 
-//#define LED0 D0 // NodeMCU pin GPIO16 (D0)
+#define LED0 2 // NodeMCU pin GPIO16 (D0)
 //#define LED1 D1 // NodeMCU pin GPIO5 (D1)
 //#define LED2 D2 // NodeMCU pin GPIO4 (D2)
 //#define LED3 D3 // NodeMCU pin GPIO0 (D3)
@@ -164,7 +164,7 @@ int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
 // Arduino values for IR sensor connected to GPIO2
-uint16_t RECV_PIN = 2; // GPIO2
+uint16_t RECV_PIN = 2; // D5 GPIO2
 //IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
 //decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
@@ -372,8 +372,8 @@ void arduinoWebserver() {
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
-  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
-  
+//client.println("<p>Use the drop-down list to select the parameter values</p>");
+
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");
   client.println("<option value=""IoT_Device_Send_Message"">IoT Device Send Message</option>");

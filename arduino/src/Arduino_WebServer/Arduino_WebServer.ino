@@ -156,7 +156,7 @@ unsigned long milsec = 0;
 unsigned long epoch = 0;
 
 // DHT11 digital temperature and humidity sensor pin Vout (sense)
-int pinDHT11 = 2;
+int pinDHT11 = 2; // GPIO2
 //SimpleDHT11 dht11; <-- uncommit for dht11
 
 // LDR Photocell light interface for NodeMCU
@@ -372,7 +372,7 @@ void arduinoWebserver() {
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
   client.println("<form action=""#"" method=""GET"">");
-  client.println("<p>Use the drop-down list to select the parameter values to send</p>");
+  client.println("<p>Use the drop-down list to select the parameter values</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");

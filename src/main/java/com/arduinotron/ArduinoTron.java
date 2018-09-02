@@ -50,9 +50,9 @@ public class ArduinoTron {
 
 	private int port = 5055;
 	private String knowledgeDebug = "none";
-	private String kSessionType = ""; // defaut createKieSession
-	private String kSessionName = ""; // "ksession-movement";
-	private String processID = ""; // com.TrainMovement";
+	private String kSessionType = ""; // createKieSession
+	private String kSessionName = ""; // ksession-movement
+	private String processID = ""; // com.TrainMovement
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 
