@@ -265,7 +265,7 @@ void arduinoTronSend()
   Serial.print(" ESP8266 Chip Id ");
   Serial.print(ESP.getChipId());
   Serial.print(" gpio ");
-  Serial.print(switchState);
+  Serial.print(irkey); // switchState
   Serial.print(" loop ");
   Serial.println(loopCounter);
 
@@ -372,7 +372,13 @@ void arduinoWebserver() {
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
-//client.println("<p>Use the drop-down list to select the parameter values</p>");
+
+  client.print("<p>Connected to ");
+  client.print(ssid);
+  client.print(" ESP8266 Chip Id ");
+  client.print(ESP.getChipId());
+  client.println("</p>");
+  //client.println("<p>Use the drop-down list to select the parameter values</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");

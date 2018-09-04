@@ -164,7 +164,7 @@ int photocellChange = 10; // LDR and 10K pulldown resistor are connected to A0
 float photocellLight; // Variable to hold last analog light value
 
 // Arduino values for IR sensor connected to GPIO2
-uint16_t RECV_PIN = D5;
+uint16_t RECV_PIN = D5; // D5 GPIO2
 //IRrecv irrecv(RECV_PIN); // <-- uncommit for IR VS1838
 //decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
@@ -265,7 +265,7 @@ void arduinoTronSend()
   Serial.print(" ESP8266 Chip Id ");
   Serial.print(ESP.getChipId());
   Serial.print(" gpio ");
-  Serial.print(switchState);
+  Serial.print(irkey); // switchState
   Serial.print(" loop ");
   Serial.println(loopCounter);
 
@@ -370,9 +370,15 @@ void arduinoWebserver() {
   client.println("p{color:yellow; font-family : verdana;}");
 
   client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
-  client.println("<h3>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h3>");
+  client.println("<h4>Arduino Tron Web Server MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
-  client.println("<p>Use the drop-down list to select the parameter values</p>");
+
+  client.print("<p>Connected to ");
+  client.print(ssid);
+  client.print(" ESP8266 Chip Id ");
+  client.print(ESP.getChipId());
+  client.println("</p>");
+  //client.println("<p>Use the drop-down list to select the parameter values</p>");
 
   client.println("Arduino Tron Web Server Message ");
   client.println("<select name=""textMessage"">");
