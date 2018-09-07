@@ -34,15 +34,17 @@ public class AgentsList {
 		}
 	}
 
-	public void putAgent(String agentName, String ipAddress) {
-		agents.put(agentName, ipAddress);
-	}
-
 	public String getAgent(String agentName) {
 		for (Object o : agents.entrySet()) {
 			Map.Entry entry = (Map.Entry) o;
-			return (String) entry.getValue();
+			if (agentName.indexOf((String) entry.getKey()) != -1) {
+				return (String) entry.getValue();
+			}
 		}
 		return "";
+	}
+
+	public void putAgent(String agentName, String ipAddress) {
+		agents.put(agentName, ipAddress);
 	}
 }

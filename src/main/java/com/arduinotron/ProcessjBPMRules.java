@@ -27,6 +27,7 @@ import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import com.arduinotron.model.Devices;
 import com.arduinotron.model.DevicesList;
 import com.arduinotron.model.ServerEvent;
+import com.arduinotron.model.StateList;
 import com.arduinotron.ui.MainWindow;
 import com.arduinotron.util.AgendaListener;
 import com.arduinotron.util.SystemOutProcessEventListener;
@@ -37,6 +38,7 @@ import com.arduinotron.util.WorkingMemoryListener;
  */
 public class ProcessjBPMRules {
 
+	private StateList stateList;
 	private DevicesList devices;
 	private KieSession kSession;
 	private KieContainer kContainer;
@@ -51,14 +53,14 @@ public class ProcessjBPMRules {
 
 	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID,
-			String knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID, StateList stateList, String knowledgeDebug) {
 		super();
 		this.devices = devices;
 		this.knowledgeDebug = knowledgeDebug;
 		this.kSessionType = kSessionType;
 		this.kSessionName = kSessionName;
 		this.processID = processID;
+		this.stateList = stateList;
 	}
 
 	public KieSession createKieSession(String kSessionName) {
@@ -214,6 +216,11 @@ public class ProcessjBPMRules {
 				params.put(key, serverEvent.map.get(key));
 			}
 
+			Map<String, Object> state = stateList.mapState();
+			for (String key : state.keySet()) {
+				params.put(key, state.get(key));
+			}
+			
 			// go! - start jBPM processID
 			if (processID != null && !processID.isEmpty()) {
 				// Start the process with knowledge session

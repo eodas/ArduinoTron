@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arduinotron.model.AgentsList;
 import com.arduinotron.model.DevicesList;
+import com.arduinotron.model.StateList;
 import com.arduinotron.server.IoTServer;
 import com.arduinotron.server.AgentConnect;
 import com.arduinotron.ui.MainWindow;
@@ -118,9 +119,9 @@ public class ArduinoTron {
 			System.err.println("Error: Must set a processID == defined in arduinotron.properties file.");
 			return;
 		}
-		
-		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
-				knowledgeDebug);
+
+		StateList stateList = new StateList();
+		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID, stateList, knowledgeDebug);
 		startIoTServer(processjBPMRules);
 	}
 
