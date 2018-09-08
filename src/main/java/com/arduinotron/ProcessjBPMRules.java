@@ -53,7 +53,8 @@ public class ProcessjBPMRules {
 
 	private final Logger logger = LoggerFactory.getLogger(ProcessjBPMRules.class);
 
-	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID, StateList stateList, String knowledgeDebug) {
+	public ProcessjBPMRules(DevicesList devices, String kSessionType, String kSessionName, String processID,
+			StateList stateList, String knowledgeDebug) {
 		super();
 		this.devices = devices;
 		this.knowledgeDebug = knowledgeDebug;
@@ -110,7 +111,7 @@ public class ProcessjBPMRules {
 	}
 
 //
-	
+
 	public void main2(String[] args) {
 		try {
 			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
@@ -220,7 +221,7 @@ public class ProcessjBPMRules {
 			for (String key : state.keySet()) {
 				params.put(key, state.get(key));
 			}
-			
+
 			// go! - start jBPM processID
 			if (processID != null && !processID.isEmpty()) {
 				// Start the process with knowledge session

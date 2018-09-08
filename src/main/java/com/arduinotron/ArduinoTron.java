@@ -121,7 +121,8 @@ public class ArduinoTron {
 		}
 
 		StateList stateList = new StateList();
-		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID, stateList, knowledgeDebug);
+		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
+				stateList, knowledgeDebug);
 		startIoTServer(processjBPMRules);
 	}
 
