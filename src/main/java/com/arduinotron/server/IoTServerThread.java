@@ -35,12 +35,16 @@ public class IoTServerThread extends Thread {
 	@Override
 	public void run() {
 		try {
+			String ipAddress = socket.getInetAddress().getHostAddress();
+			System.out.println("> TRACE IoT device connected from IP " + ipAddress);
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintStream(socket.getOutputStream());
 			String request = "";
 			while (true) {
 				request = in.readLine();
-
+				System.out.println("> TRACE " + request);
+				
 				boolean moreLines = true;
 				while (moreLines) {
 					String reqtmp = in.readLine();
