@@ -76,6 +76,7 @@ public class IoTServerThread extends Thread {
 					response = processjBPMRules.receive(serverEvent);
 					if ((response != null) && (response.length() > 0)) {
 						out.println(response);
+						System.out.println("> TRACE RSP " + response);
 					}
 					sendHttpTextResp(200, "OK");
 				}
