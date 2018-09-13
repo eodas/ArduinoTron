@@ -231,8 +231,9 @@ public class ProcessjBPMRules {
 				System.out.println(">>" + instance.getState());
 			}
 
-			// instance.getParentProcessInstanceId().getVar
-			response = (String) kSession.getGlobal("results");
+			// Set response jBPM Global Variable List
+			// kcontext.getKnowledgeRuntime().setGlobal("response", "");
+			response = (String) kSession.getGlobal("response");
 
 			switch (this.kSessionType) {
 			case "createKieSession":

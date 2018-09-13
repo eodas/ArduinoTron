@@ -74,7 +74,7 @@ public class IoTServerThread extends Thread {
 						}
 					}
 					response = processjBPMRules.receive(serverEvent);
-					if (response != null) {
+					if ((response != null) && (response.length() > 0)) {
 						out.println(response);
 					}
 					sendHttpTextResp(200, "OK");

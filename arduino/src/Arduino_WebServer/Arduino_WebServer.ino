@@ -169,6 +169,10 @@ uint16_t RECV_PIN = D5; // D5 GPIO2
 //decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
 
+// Set response jBPM Global Variable List
+// kcontext.getKnowledgeRuntime().setGlobal("response", "");
+String response = "";
+
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
 #include "user_interface.h"
@@ -231,11 +235,11 @@ void loop(void) {
   Serial.println(loopCounter);
   loopCounter++;
 
-  int ca2 = 0;
+  int ca1 = 0;
   // Wait up to 2 seconds for server to respond then read response
-  while ((!client.available()) && (ca2 < 500)) {
+  while ((!client.available()) && (ca1 < 500)) {
     delay(1); // was 2 seconds
-    ca2++;
+    ca1++;
   }
   arduinoWebserver();
   if ((irkey.indexOf("HTTP") == -1) && (alarm.indexOf("HTTP") == -1) &&
@@ -307,17 +311,23 @@ void arduinoTronSend()
 
   client.println(); // empty line for apache server
 
-  int ca3 = 0;
+  int ca2 = 0;
   // Wait up to 2 seconds for server to respond then read response
-  while ((!client.available()) && (ca3 < 1000)) {
+  while ((!client.available()) && (ca2 < 1000)) {
     delay(1); // was 2 seconds
-    ca3++;
+    ca2++;
   }
 
+  int ca3 = 0;
+  response = "";
   while (client.available())
   {
     String line = client.readStringUntil('\r');
+    if ((line.indexOf("HTTP") == -1) && (ca3 == 0)) {
+      response = line;
+    }
     Serial.print(line);
+    ca3++;
   }
   client.stop();
 
