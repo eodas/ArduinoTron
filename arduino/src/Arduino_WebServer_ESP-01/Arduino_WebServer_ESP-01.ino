@@ -169,6 +169,10 @@ uint16_t RECV_PIN = 2; // D5 GPIO2
 //decode_results results; // <-- uncommit for IR VS1838
 String irkey = "1.0";
 
+// Set response jBPM Global Variable List
+// kcontext.getKnowledgeRuntime().setGlobal("response", "");
+String response = "";
+
 // Required for LIGHT_SLEEP_T delay mode
 extern "C" {
 #include "user_interface.h"
@@ -202,7 +206,7 @@ void setup(void) {
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(200);
     Serial.print(".");
   }
   Serial.println("");
@@ -231,11 +235,15 @@ void loop(void) {
   Serial.println(loopCounter);
   loopCounter++;
 
-  while (!client.available()) {
-    delay(1);
+  int ca1 = 0;
+  // Wait up to 2 seconds for server to respond then read response
+  while ((!client.available()) && (ca1 < 500)) {
+    delay(1); // was 2 seconds
+    ca1++;
   }
   arduinoWebserver();
-  if ((irkey.indexOf("HTTP") == -1) && (alarm.indexOf("HTTP") == -1)) {
+  if ((irkey.indexOf("HTTP") == -1) && (alarm.indexOf("HTTP") == -1) &&
+      (irkey.length() > 0) && (alarm.length() > 0)) {
     arduinoTronSend();
   }
 }
@@ -303,17 +311,23 @@ void arduinoTronSend()
 
   client.println(); // empty line for apache server
 
-  int i = 0;
-  // Wait up to 5 seconds for server to respond then read response
-  while ((!client.available()) && (i < 1000)) {
-    delay(5); // was 10 seconds
-    i++;
+  int ca2 = 0;
+  // Wait up to 2 seconds for server to respond then read response
+  while ((!client.available()) && (ca2 < 1000)) {
+    delay(1); // was 2 seconds
+    ca2++;
   }
 
+  int ca3 = 0;
+  response = "";
   while (client.available())
   {
     String line = client.readStringUntil('\r');
+    if ((line.indexOf("HTTP") == -1) && (ca3 == 0)) {
+      response = line;
+    }
     Serial.print(line);
+    ca3++;
   }
   client.stop();
 
@@ -346,15 +360,15 @@ void arduinoWebserver() {
 
   int ind1 = request.indexOf('='); // find location of first =
   int ind2 = request.indexOf('&', ind1); //find location of first &
-  textMessage = request.substring(ind1 + 1, ind2); // captures textMessage string
+  irkey = request.substring(ind1 + 1, ind2); // captures keypress string
 
   ind1 = request.indexOf('=', ind2); //find location of second =
   ind2 = request.indexOf('&', ind1); //find location of second &
-  irkey = request.substring(ind1 + 1, ind2); // captures keypress string
+  alarm = request.substring(ind1 + 1, ind2); // captures alarm string
 
   ind1 = request.indexOf('=', ind2); //find location of third =
   ind2 = request.indexOf(' ', ind1); //find location of third
-  alarm = request.substring(ind1 + 1, ind2); // captures alarm string
+  textMessage = request.substring(ind1 + 1, ind2); // captures textMessage string
 
   // Return the response
   client.println("HTTP/1.1 200 OK");
@@ -363,13 +377,14 @@ void arduinoWebserver() {
   client.println(""); //  do not forget this one
 
   client.println("<!DOCTYPE HTML>");
-  client.println("<html><head><style type = ""text/css"">");
 
-  client.println("body{background-color : powderblue;}");
-  client.println("h1{color:black; font-family : arial;}");
-  client.println("p{color:yellow; font-family : verdana;}");
+  client.println("<html><body background=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"">");
 
-  client.println("</style>Arduino Tron Web Server AI-IoT :: Internet of Things Drools-jBPM</head><body>");
+  // client.println("<html><head><style type = ""text/css"">");
+  // client.println("body{background-color : powderblue;}");
+  // client.println("h1{color:black; font-family : arial;}");
+  // client.println("p{color:yellow; font-family : verdana;}");
+  // client.println("</style>Arduino Tron Web Server ESP-01 AI-IoT :: Internet of Things Drools-jBPM</head><body>");
   client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
 
@@ -378,18 +393,6 @@ void arduinoWebserver() {
   client.print(" ESP8266 Chip Id ");
   client.print(ESP.getChipId());
   client.println("</p>");
-  //client.println("<p>Use the drop-down list to select the parameter values</p>");
-
-  client.println("Arduino Tron Web Server Message ");
-  client.println("<select name=""textMessage"">");
-  client.println("<option value=""IoT_Device_Send_Message"">IoT Device Send Message</option>");
-  client.println("<option value=""Server_Room_Temperature"">Server Room Temperature</option>");
-  client.println("<option value=""Movement_Security_Alarm"">Movement Security Alarm</option>");
-  client.println("<option value=""Illuminance_Alert_Message"">Illuminance Alert Message</option>");
-  client.println("<option value=""IoT_Environment_Conditions"">IoT Environment Conditions</option>");
-  client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too Warm Temp Raise Alarm</option>");
-  client.println("</select>");
-  client.println("<br>");
 
   client.println("Arduino Tron Event Condition ");
   client.println("<select name=""keypress"">");
@@ -403,7 +406,7 @@ void arduinoWebserver() {
   client.println("<option value=""8.0"">Proximity</option>");
   client.println("<option value=""9.0"">Update</option>");
   client.println("</select>");
-  client.println("<br>");
+  client.println("<br><br>");
 
   client.println("Arduino Tron Event Send Alarm ");
   client.println("<select name=""alarm"">");
@@ -419,8 +422,19 @@ void arduinoWebserver() {
   client.println("</select>");
   client.println("<br><br>");
 
+  client.println("Arduino Tron Web Server Message ");
+  client.println("<select name=""textMessage"">");
+  client.println("<option value=""IoT_Device_Send_Message"">IoT Device Send Message</option>");
+  client.println("<option value=""Server_Room_Temperature"">Server Room Temperature</option>");
+  client.println("<option value=""Movement_Security_Alarm"">Movement Security Alarm</option>");
+  client.println("<option value=""Illuminance_Alert_Message"">Illuminance Alert Message</option>");
+  client.println("<option value=""IoT_Environment_Conditions"">IoT Environment Conditions</option>");
+  client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too Warm Temp Raise Alarm</option>");
+  client.println("</select>");
+  client.println("<br><br>");
+
   client.println("Send Arduino Tron Server Message <input type=submit value=Send><br><br>");
-  client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
+  // client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
   client.println("</form></body></html>");
 
   delay(1);
@@ -454,7 +468,7 @@ void setNTPServerTime()
   WiFi.hostByName(ntpServerName, timeServerIP);
 
   sendNTPpacket(timeServerIP);
-  delay(1000);
+  delay(500);
 
   int cb = udp.parsePacket();
   if (!cb) {
