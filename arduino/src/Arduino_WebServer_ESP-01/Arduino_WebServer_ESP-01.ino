@@ -299,7 +299,7 @@ void arduinoTronSend()
     client.print("&humidity=" + humidity);
   }
 
-  // digitalRead GPIO15(D8) send values for web server
+  // digitalRead GPIO15(D8) send values for web server ESP-01
   client.print("&textMessage=" + textMessage);
   client.print("&keypress=" + irkey); // keypress=irkey
   client.print("&alarm=" + alarm);
@@ -377,15 +377,17 @@ void arduinoWebserver() {
   client.println(""); //  do not forget this one
 
   client.println("<!DOCTYPE HTML>");
+  client.println("<html><head><title>Arduino Tron ESP-01</title><style type = ""text/css"">");
 
-  client.println("<html><body background=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"">");
+  //client.println("body{background-color : powderblue;}");
+  client.println("body {background-image : url(""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"");");
+  client.println("background-repeat : no-repeat;");
+  client.println("background-color : powderblue;}");
+  client.println("h1{color:black; font-family : arial;}");
+  client.println("p{color:yellow; font-family : verdana;}");
 
-  // client.println("<html><head><style type = ""text/css"">");
-  // client.println("body{background-color : powderblue;}");
-  // client.println("h1{color:black; font-family : arial;}");
-  // client.println("p{color:yellow; font-family : verdana;}");
-  // client.println("</style>Arduino Tron Web Server ESP-01 AI-IoT :: Internet of Things Drools-jBPM</head><body>");
-  client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
+  client.println("</style>Arduino Tron Web Server ESP-01 AI-IoT :: Internet of Things Drools-jBPM</head><body>");
+  //client.println("<h4>Arduino Tron Web Server ESP-01 MQTT AI-IoT Drools-jBPM</h4>");
   client.println("<form action=""#"" method=""GET"">");
 
   client.print("<p>Connected to ");
@@ -406,7 +408,7 @@ void arduinoWebserver() {
   client.println("<option value=""8.0"">Proximity</option>");
   client.println("<option value=""9.0"">Update</option>");
   client.println("</select>");
-  client.println("<br><br>");
+  client.println("<br>");
 
   client.println("Arduino Tron Event Send Alarm ");
   client.println("<select name=""alarm"">");
@@ -420,9 +422,9 @@ void arduinoWebserver() {
   client.println("<option value=""temperature"">Temperature</option>");
   client.println("<option value=""tampering"">Tampering</option>");
   client.println("</select>");
-  client.println("<br><br>");
+  client.println("<br>");
 
-  client.println("Arduino Tron Web Server Message ");
+  client.println("Arduino Tron Web Server ESP-01 Message ");
   client.println("<select name=""textMessage"">");
   client.println("<option value=""IoT_Device_Send_Message"">IoT Device Send Message</option>");
   client.println("<option value=""Server_Room_Temperature"">Server Room Temperature</option>");
@@ -431,10 +433,10 @@ void arduinoWebserver() {
   client.println("<option value=""IoT_Environment_Conditions"">IoT Environment Conditions</option>");
   client.println("<option value=""Too_Warm_Temp_Raise_Alarm"">Too Warm Temp Raise Alarm</option>");
   client.println("</select>");
-  client.println("<br><br>");
+  client.println("<br><br><br><br>");
 
   client.println("Send Arduino Tron Server Message <input type=submit value=Send><br><br>");
-  // client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
+  //client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
   client.println("</form></body></html>");
 
   delay(1);
