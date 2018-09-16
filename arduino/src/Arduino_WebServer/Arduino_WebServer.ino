@@ -377,7 +377,7 @@ void arduinoWebserver() {
   client.println(""); //  do not forget this one
 
   client.println("<!DOCTYPE HTML>");
-  client.println("<html><head><style type = ""text/css"">");
+  client.println("<html><head><title>Arduino Tron Web Server</title><style type = ""text/css"">");
 
   client.println("body{background-color : powderblue;}");
   client.println("h1{color:black; font-family : arial;}");
