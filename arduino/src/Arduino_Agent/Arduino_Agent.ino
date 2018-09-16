@@ -160,8 +160,9 @@ void arduinoWebserver()
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
   client.println(""); //  do not forget this one
+
   client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
+  client.println("<html><title>Arduino Tron Agent</title>");
   client.println("<h3>Arduino Tron Agent MQTT AI-IoT :: Internet of Things Drools-jBPM</h3>");
   client.print("LED PIN-1 is now: ");
   if (value1 == HIGH) {
