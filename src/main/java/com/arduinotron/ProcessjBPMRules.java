@@ -110,8 +110,7 @@ public class ProcessjBPMRules {
 		return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 	}
 
-//
-
+	// test procedure for kSessionType=getRuntimeManager
 	public void main2(String[] args) {
 		try {
 			manager = getRuntimeManager("com/multipleinstance/multipleinstance.bpmn");
@@ -142,8 +141,7 @@ public class ProcessjBPMRules {
 		}
 		System.exit(0);
 	}
-
-//
+	// test procedure for kSessionType=getRuntimeManager
 
 	public String receive(ServerEvent serverEvent) {
 		String response = "";

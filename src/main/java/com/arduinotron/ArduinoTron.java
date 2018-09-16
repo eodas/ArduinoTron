@@ -109,7 +109,7 @@ public class ArduinoTron {
 		AgentConnect agentConnect = new AgentConnect(agentsList, knowledgeDebug);
 
 		if (kSessionType == "") {
-			kSessionType = "createKieSession";
+			kSessionType = "createKieSession"; // Default kSessionType=createKieSession
 		}
 		if (kSessionName == "") {
 			System.err.println("Error: Must set a kSessionName == defined in arduinotron.properties file.");
