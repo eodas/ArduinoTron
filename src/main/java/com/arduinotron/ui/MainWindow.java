@@ -9,6 +9,7 @@ import java.util.Properties;
 import com.arduinotron.ArduinoTron;
 import com.arduinotron.model.Devices;
 import com.arduinotron.model.ServerEvent;
+import com.arduinotron.events.EventReader;
 import com.arduinotron.util.WebBrowser;
 
 import javax.swing.JFrame;
@@ -105,6 +106,7 @@ public class MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ArduinoTron.stopIoTServer();
+				EventReader.shutdownEventThread();
 				System.exit(0);
 			}
 		});

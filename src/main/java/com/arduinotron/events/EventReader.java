@@ -26,6 +26,7 @@ public class EventReader {
 		this.serverEvent = serverEvent;
 		this.eventSleepTimer = eventSleepTimer;
 		this.processjBPMRules = processjBPMRules;
+		System.out.println("Arduino Tron Drools-jBPM AI-IoT Event Reader, Location: " + serverEvent);
 	}
 
 	public void StartEventThread() {
