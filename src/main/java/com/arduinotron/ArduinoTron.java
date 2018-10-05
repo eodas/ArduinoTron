@@ -21,6 +21,7 @@ import com.arduinotron.model.DevicesList;
 import com.arduinotron.model.StateList;
 import com.arduinotron.server.IoTServer;
 import com.arduinotron.server.AgentConnect;
+import com.arduinotron.events.EventReader;
 import com.arduinotron.ui.MainWindow;
 
 /**
@@ -50,10 +51,12 @@ public class ArduinoTron {
 	private static boolean iotrunning = false;
 
 	private int port = 5055;
-	private String knowledgeDebug = "none";
+	private int eventSleepTimer = 0; // 2000
+	private String knowledgeDebug = "none"; // none, debug
 	private String kSessionType = ""; // createKieSession
 	private String kSessionName = ""; // ksession-movement
 	private String processID = ""; // com.TrainMovement
+	private String serverEvent = ""; // C:\arduinotron\event.log
 
 	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
 
@@ -121,9 +124,15 @@ public class ArduinoTron {
 		}
 
 		StateList stateList = new StateList();
+
 		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
 				stateList, knowledgeDebug);
 		startIoTServer(processjBPMRules);
+
+		if ((serverEvent != "") && (eventSleepTimer > 0)) {
+			EventReader source = new EventReader(processjBPMRules, serverEvent, eventSleepTimer);
+			source.StartEventThread();
+		}
 	}
 
 	public void readProperties() {
@@ -143,9 +152,15 @@ public class ArduinoTron {
 					String portStr = value;
 					port = Integer.parseInt(portStr);
 				}
-
 				if (key.indexOf("serverEvent") != -1) {
-					// serverEvent = value;
+					serverEvent = value;
+				}
+				if (key.indexOf("eventSleepTimer") != -1) {
+					String eventSleepTimerStr = value;
+					eventSleepTimer = Integer.parseInt(eventSleepTimerStr);
+					if (eventSleepTimer < 100) {
+						eventSleepTimer = 100;
+					}
 				}
 				if (key.indexOf("knowledgeDebug") != -1) {
 					knowledgeDebug = value;
