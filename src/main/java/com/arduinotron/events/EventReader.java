@@ -105,24 +105,27 @@ public class EventReader {
 		ServerEvent serverEvent = new ServerEvent();
 		String[] req = Pattern.compile(" ").split(request);
 
-		String arg = req[1].substring(req[1].indexOf('?') + 1);
-		String[] tokens = arg.split("&");
+		if (req[0].equals("GET")) {
 
-		for (String token : tokens) {
-			try {
-				String key = token.substring(0, token.indexOf('='));
-				String value = token.substring(token.indexOf('=') + 1);
-				serverEvent.add(key, value);
+			String arg = req[1].substring(req[1].indexOf('?') + 1);
+			String[] tokens = arg.split("&");
 
-			} catch (IndexOutOfBoundsException e) {
-				System.err.println("Error: Unexpected exception caught: " + e.getMessage());
-				e.printStackTrace();
+			for (String token : tokens) {
+				try {
+					String key = token.substring(0, token.indexOf('='));
+					String value = token.substring(token.indexOf('=') + 1);
+					serverEvent.add(key, value);
+
+				} catch (IndexOutOfBoundsException e) {
+					System.err.println("Error: Unexpected exception caught: " + e.getMessage());
+					e.printStackTrace();
+				}
 			}
-		}
-		String response = "";
-		response = processjBPMRules.receive(serverEvent);
-		if ((response != null) && (response.length() > 0)) {
-			System.out.println("> EVENT RSP " + response);
+			String response = "";
+			response = processjBPMRules.receive(serverEvent);
+			if ((response != null) && (response.length() > 0)) {
+				System.out.println("> EVENT RSP " + response);
+			}
 		}
 	}
 
