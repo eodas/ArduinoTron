@@ -241,7 +241,7 @@ public class MainWindow {
 
 	void helpContentsAction(ActionEvent e) {
 		try {
-			WebBrowser.url("http://www.arduinotron.com/help/");
+			WebBrowser.url("http://www.iotbpm.com/help/");
 		} catch (Exception ex) {
 			System.out.println(ex.toString());
 		}

@@ -374,7 +374,7 @@ void arduinoWebserver() {
   <title>Arduino Tron IoT Automation</title>\
   <style type = ""text/css"">\
   \
-    body {background-image : url(""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg""); background-repeat : no-repeat; background-color : powderblue;}\
+    body {background-image : url(""http://www.iotbpm.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg""); background-repeat : no-repeat; background-color : powderblue;}\
     h1{color:black; font-family : arial;}\
     p{color:yellow; font-family : verdana;}\
   </style>\

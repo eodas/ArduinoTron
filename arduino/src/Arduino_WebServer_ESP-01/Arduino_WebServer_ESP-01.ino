@@ -380,7 +380,7 @@ void arduinoWebserver() {
   client.println("<html><head><title>Arduino Tron ESP-01</title><style type = ""text/css"">");
 
   //client.println("body{background-color : powderblue;}");
-  client.println("body {background-image : url(""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"");");
+  client.println("body {background-image : url(""http://www.iotbpm.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"");");
   client.println("background-repeat : no-repeat;");
   client.println("background-color : powderblue;}");
   client.println("h1{color:black; font-family : arial;}");
@@ -436,7 +436,7 @@ void arduinoWebserver() {
   client.println("<br><br><br><br>");
 
   client.println("Send Arduino Tron Server Message <input type=submit value=Send><br><br>");
-  //client.println("<img src=""http://www.arduinotron.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
+  //client.println("<img src=""http://www.iotbpm.com/wp-content/uploads/2018/05/Arduino_Logotype-763x354.jpg"" alt=""Arduino Tron"">");
   client.println("</form></body></html>");
 
   delay(1);
