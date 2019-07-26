@@ -3,26 +3,11 @@ package com.arduinotron;
 import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arduinotron.model.AgentsList;
-import com.arduinotron.model.DevicesList;
-import com.arduinotron.model.StateList;
-import com.arduinotron.server.IoTServer;
-import com.arduinotron.server.AgentConnect;
-import com.arduinotron.events.EventReader;
-import com.arduinotron.ui.MainWindow;
 
 /**
  * Executive Order Corporation we make Things Smart
@@ -36,41 +21,53 @@ import com.arduinotron.ui.MainWindow;
  */
 
 /**
+ * Update these with your LAT/LON GPS position values
+ * 
+ * You can find LAT/LON from an address https://www.latlong.net/convert-address-to-lat-long.html
+ * String address = "National_Air_Space_Museum_600_Independence_Ave_Washington_DC_20560";
+ * 
+ * Values ?id=334455&timestamp=1521212240&lat=38.888160&lon=-77.019868&speed=0.0&bearing=0.0&altitude=0.0&accuracy=0.0&batt=98.7
+ * String timestamp = "1521212240"; // timestamp
+ * String speeds = "0.0";
+ * String bearing = "0.0";
+ * String altitude = "0.0";
+ * String accuracy = "0.0"; // position accuracy
+ * String batt = "89.7"; // battery value
+ * String light = "53.4"; // photocell value
+ * 
+ * Arduino Tron currently supports these additional data fields in the Server Event data model:
+ * 
+ * id=6&event=allEvents&protocol=osmand&servertime=<date>&timestamp=<date>&fixtime=<date>&outdated=false&valid=true
+ * &lat=38.85&lon=-84.35&altitude=27.0&speed=0.0&course=0.0&address=<street address>&accuracy=0.0&network=null
+ * &batteryLevel=78.3&textMessage=Message_Sent&temp=71.2&ir_temp=0.0&humidity=0.0&mbar=79.9
+ * &accel_x=-0.01&accel_y=-0.07&accel_z=9.79&gyro_x=0.0&gyro_y=-0.0&gyro_z=-0.0&magnet_x=-0.01&magnet_y=-0.07&magnet_z=9.81
+ * &light=91.0&keypress=0.0&alarm=Temperature&distance=1.6&totalDistance=3.79&motion=false
+ * 
+ * You can add more additional fields to the data model and transmit via any device to the Arduino Tron Drools-jBPM processing.
+ */
+
+/**
  * This is the main class for Arduino Tron AI-IoT Drools-jBPM Expert System
  */
 public class ArduinoTron {
 
-	AgentsList agentsList;
 	ArduinoTron arduinoTron;
-	private static IoTServer iotServer = null;
 
 	private String base_path = "";
 	private String appVer = "1.01A";
 	private String buildDate = "0304";
 	private boolean is64bitJMV = false;
-	private static boolean iotrunning = false;
-
-	private int port = 5055;
-	private int eventSleepTimer = 0; // 2000
-	private String knowledgeDebug = "none"; // none, debug
-	private String kSessionType = ""; // createKieSession
-	private String kSessionName = ""; // ksession-movement
-	private String processID = ""; // com.TrainMovement
-	private String serverEvent = ""; // C:\arduinotron\event.log
-
-	private final Logger logger = LoggerFactory.getLogger(ArduinoTron.class);
+	private boolean knowledgeDebug = false;
 
 	public ArduinoTron(String[] args) {
 
 		this.arduinoTron = this;
-		agentsList = new AgentsList();
 		System.out.println("Arduino Tron AI-IoT :: Internet of Things Drools-jBPM Expert System"
 				+ " using Arduino Tron AI-IoT Processing -version: " + appVer + " (" + buildDate + ")");
 
 		getIPAddress();
-		readProperties();
 
-		if (knowledgeDebug.indexOf("none") == -1) {
+		if (knowledgeDebug) {
 			System.out.println("os.name: " + System.getProperty("os.name"));
 			System.out.println("os.arch: " + System.getProperty("os.arch"));
 			is64bitJMV = (System.getProperty("os.arch").indexOf("64") != -1);
@@ -95,105 +92,18 @@ public class ArduinoTron {
 	public void init(final boolean exitOnClose) {
 		// set up and show main window
 		Locale.setDefault(Locale.US);
-		final DevicesList devices = new DevicesList();
 
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(devices.getDevices(), exitOnClose);
-					window.show(); // .setVisible(true);
+//					ArduinoWindow window = new ArduinoWindow(exitOnClose);
+//					window.show(); // window.frmEo.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
-		AgentConnect agentConnect = new AgentConnect(agentsList, knowledgeDebug);
-
-		if (kSessionType == "") {
-			kSessionType = "createKieSession"; // Default kSessionType=createKieSession
-		}
-		if (kSessionName == "") {
-			System.err.println("Error: Must set a kSessionName == defined in arduinotron.properties file.");
-			return;
-		}
-		if (processID == "") {
-			System.err.println("Error: Must set a processID == defined in arduinotron.properties file.");
-			return;
-		}
-
-		StateList stateList = new StateList();
-
-		ProcessjBPMRules processjBPMRules = new ProcessjBPMRules(devices, kSessionType, kSessionName, processID,
-				stateList, knowledgeDebug);
-		startIoTServer(processjBPMRules);
-
-		if ((serverEvent != "") && (eventSleepTimer > 0)) {
-			EventReader source = new EventReader(processjBPMRules, serverEvent, eventSleepTimer);
-			source.StartEventThread();
-		}
-	}
-
-	public void readProperties() {
-		try {
-			File file = new File("arduinotron.properties");
-			FileInputStream fileInput = new FileInputStream(file);
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			fileInput.close();
-
-			Enumeration<?> enuKeys = properties.keys();
-			while (enuKeys.hasMoreElements()) {
-				String key = (String) enuKeys.nextElement();
-				String value = properties.getProperty(key);
-
-				if (key.indexOf("port") != -1) {
-					String portStr = value;
-					port = Integer.parseInt(portStr);
-				}
-				if (key.indexOf("serverEvent") != -1) {
-					serverEvent = value;
-				}
-				if (key.indexOf("eventSleepTimer") != -1) {
-					String eventSleepTimerStr = value;
-					eventSleepTimer = Integer.parseInt(eventSleepTimerStr);
-					if (eventSleepTimer < 100) {
-						eventSleepTimer = 100;
-					}
-				}
-				if (key.indexOf("knowledgeDebug") != -1) {
-					knowledgeDebug = value;
-				}
-				if (key.indexOf("kSessionType") != -1) {
-					kSessionType = value;
-				}
-				if (key.indexOf("kSessionName") != -1) {
-					kSessionName = value;
-				}
-				if (key.indexOf("processID") != -1) {
-					processID = value;
-				}
-				if (key.indexOf("arduinoAgent") != -1) {
-					agentsList.parseAgents(value);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void startIoTServer(ProcessjBPMRules processjBPMRules) {
-		iotServer = new IoTServer(processjBPMRules, port);
-		iotServer.start();
-		iotrunning = true;
-	}
-
-	public static void stopIoTServer() {
-		iotServer.killServer();
-		iotrunning = false;
 	}
 
 	public void getIPAddress() {
@@ -221,7 +131,7 @@ public class ArduinoTron {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Arduino Tron :: Executive Order IoT Sensor Processor System"
+		System.out.println("Arduino Tron :: :: Internet of Things Drools-jBPM Expert System"
 				+ " - Arduino Tron MQTT AI-IoT Client using AI-IoT Drools-jBPM");
 
 		new ArduinoTron(args).init(true);
