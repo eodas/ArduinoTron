@@ -41,9 +41,9 @@ You can have an unlimited number and combination of EOSPY Clients and/or GPS tra
 
 (1) EOSPY AI-IoT – To install the EOSPY AI-IoT program on your Windows computer, download and install the "Eclipse IDE for Java Developers."
 Use the Eclipse feature to Add new software, available on the Eclipse menu “Help -> Install New Software”. Select the “Add” option and install these packages:
-Drools + jBPM Update Site 7.33.0 - http://downloads.jboss.org/jbpm/release/7.33.0.Final/updatesite/
-BPMN2-Modeler 1.5.1 - http://download.eclipse.org/bpmn2-modeler/updates/photon/1.5.1/
-GIT the EOSPY AI-IoT from the source code repository, and Import Existing Maven project.
+1. Drools + jBPM Update Site 7.33.0 - http://downloads.jboss.org/jbpm/release/7.33.0.Final/updatesite/
+2. BPMN2-Modeler 1.5.1 - http://download.eclipse.org/bpmn2-modeler/updates/photon/1.5.1/
+3. GIT the EOSPY AI-IoT from the source code repository, and Import Existing Maven project.
 
 (2) EOSPY Server – To install the EOSPY Server program on your Windows computer, download the eospy.exe installation program and click on the eospy.exe install program.
 EOSPY will by default install in the destination location: C:\Program Files\EOSpy Server and create a Start Menu folder: EOSPY on your desktop.
@@ -118,5 +118,5 @@ then
 end 
 
 - Executive Order Corporation
-- Copyright © 1978, 2019: Executive Order Corporation, All Rights Reserved
+- Copyright © 1978, 2020: Executive Order Corporation, All Rights Reserved
 - Thank You! -Executive Order Custom Software Development Team
