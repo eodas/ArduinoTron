@@ -1,6 +1,6 @@
 ﻿# EOSpy AI-IoT :: Internet of Things Drools-jBPM Arduino Tron
 
-![alt tag](http://iotbpm.com/wp-content/uploads/2018/05/Arduino_Logotype-e1527283874261.png "Arduino Tron")
+![alt tag](http://iotbpm.com/wp-content/uploads/2021/05/Arduino_Logotype-e1527283874261.png "Arduino Tron")
 
 Executive Order Corp - Arduino Tron - Arduino ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT)
 Arduino Tron :: EOSPY-Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using EOSpy AI-IoT Drools-jBPM
@@ -41,7 +41,7 @@ You can have an unlimited number and combination of EOSPY Clients and/or GPS tra
 
 (1) EOSPY AI-IoT – To install the EOSPY AI-IoT program on your Windows computer, download and install the "Eclipse IDE for Java Developers."
 Use the Eclipse feature to Add new software, available on the Eclipse menu “Help -> Install New Software”. Select the “Add” option and install these packages:
-1. Drools + jBPM Update Site 7.46.0 - http://downloads.jboss.org/jbpm/release/7.46.0.Final/updatesite/
+1. Drools + jBPM Update Site 7.47.0 - http://downloads.jboss.org/jbpm/release/7.47.0.Final/updatesite/
 2. BPMN2-Modeler 1.5.1 - http://download.eclipse.org/bpmn2-modeler/updates/photon/1.5.1/
 3. GIT the EOSPY AI-IoT from the source code repository, and Import Existing Maven project.
 
@@ -118,5 +118,5 @@ then
 end 
 
 - Executive Order Corporation
-- Copyright © 1978, 2020: Executive Order Corporation, All Rights Reserved
+- Copyright © 1978, 2021: Executive Order Corporation, All Rights Reserved
 - Thank You! -Executive Order Custom Software Development Team
