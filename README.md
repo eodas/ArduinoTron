@@ -1,4 +1,4 @@
-﻿# EOSpy AI-IoT :: Internet of Things Drools-jBPM Arduino Tron
+﻿# Arduino Tron - ESP8266 MQTT Telemetry Transport Machine-to-Machine(M2M)/Internet of Things(IoT) Arduino Tron :: Executive Order Sensor Processor System - Arduino Tron MQTT AI-IoT Client using EOSpy AI-IoT Drools-jBPM
 
 ![alt tag](http://iotbpm.com/wp-content/uploads/2018/05/Arduino_Logotype-e1527283874261.png "Arduino Tron")
 
